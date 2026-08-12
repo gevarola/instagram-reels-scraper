@@ -1,5 +1,18 @@
 const GEMINI_UPLOAD_URL = "https://generativelanguage.googleapis.com/upload/v1beta/files";
-const GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+// The model that watches the videos. This used to be hardcoded to
+// gemini-2.0-flash, which Google retired: it is no longer in the model list at
+// all, so every run failed on the analysis step. Set GEMINI_MODEL in .env to
+// override without touching code, because Google retires these on a regular
+// cadence and the next one will go the same way.
+//
+// gemini-2.5-flash is the default because it accepts video and is what the
+// sibling projects (tiktok-ai, x-ai) already run. gemini-3.1-flash-lite is
+// cheaper per token if you are watching cost. Check what your key can actually
+// reach with:
+//   curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY"
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_GENERATE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 function getApiKey(): string {
   const key = process.env.GEMINI_API_KEY;
@@ -96,10 +109,13 @@ export async function analyzeVideo(
       if (!response.ok) {
         const text = await response.text();
         if (attempt < maxRetries - 1) {
-          await new Promise((r) => setTimeout(r, 5000));
+          // Back off further each time instead of a flat 5s. A 429 means a
+          // per-minute quota, so the whole point is to wait longer, not to
+          // hammer the same limit three times and give up.
+          await new Promise((r) => setTimeout(r, backoffMs(attempt)));
           continue;
         }
-        throw new Error(`Gemini analysis error ${response.status}: ${text}`);
+        throw new Error(explainGeminiError(response.status, text));
       }
 
       const data = await response.json();
@@ -109,7 +125,7 @@ export async function analyzeVideo(
       return hashIndex >= 0 ? text.substring(hashIndex) : text;
     } catch (error) {
       if (attempt < maxRetries - 1) {
-        await new Promise((r) => setTimeout(r, 5000));
+        await new Promise((r) => setTimeout(r, backoffMs(attempt)));
         continue;
       }
       throw error;
@@ -117,4 +133,42 @@ export async function analyzeVideo(
   }
 
   throw new Error("Gemini analysis failed after retries");
+}
+
+/** 2s, 4s, 8s, 16s, plus a little jitter so parallel videos do not resync. */
+function backoffMs(attempt: number): number {
+  return 2000 * Math.pow(2, attempt) + Math.floor(Math.random() * 500);
+}
+
+/**
+ * Turn Gemini's HTTP status into something a non-engineer can act on. These
+ * three are the ones people actually hit, and the raw JSON body tells them
+ * nothing about what to do next.
+ */
+function explainGeminiError(status: number, body: string): string {
+  if (status === 429) {
+    return (
+      `Gemini rate limit (429) on model ${GEMINI_MODEL}. You hit a per-minute or ` +
+      `per-day quota on your Google AI key, not a bug in this project. Either run ` +
+      `fewer videos per go, wait and try again (the daily quota resets at midnight ` +
+      `Pacific), or turn on billing at https://aistudio.google.com/apikey to raise ` +
+      `the limits. Your current limits: https://aistudio.google.com/rate-limit\n\n${body}`
+    );
+  }
+  if (status === 404) {
+    return (
+      `Gemini says model "${GEMINI_MODEL}" does not exist (404). Google retires ` +
+      `models, so this name may have been switched off. List the ones your key can ` +
+      `reach with: curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY" ` +
+      `then set GEMINI_MODEL in .env to one of them.\n\n${body}`
+    );
+  }
+  if (status === 400 && body.includes("API key not valid")) {
+    return (
+      `Gemini rejected your API key (400). Check GEMINI_API_KEY in the .env file at ` +
+      `the project root, with no quotes and no spaces around the "=". Get a key at ` +
+      `https://aistudio.google.com/apikey\n\n${body}`
+    );
+  }
+  return `Gemini analysis error ${status}: ${body}`;
 }
