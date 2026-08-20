@@ -1,0 +1,196 @@
+id,title,archetype,sourceInspiration,premise,hook,script,createdAt,starred
+92db21d9-011c-42d7-bfd3-ed6bc85a42b0,The Free Tool Nobody Installs,Investigator,@nick_saraev — 1.3M views (Claude Code plugins listicle),"Everyone lists the flashy paid AI tools. This flips it: the free Claude Code plugin almost no one installs, and why skipping it is quietly costing people hours every week.","SPOKEN HOOK: ""There's a free plugin sitting in Claude Code right now that 90% of people using it have never touched.""
+TEXT OVERLAY: ""The plugin nobody installs""
+VISUAL DIRECTION: Screen recording, cursor hovering over an installed-plugins list, one greyed-out/uninstalled row highlighted in red.
+AUDIO NOTE: One sharp UI click sound on the highlight, then silence.
+CURIOSITY LOOP: Which plugin is it, and what is it costing me by not having it?
+WHY IT WORKS: Investigator contrast — what you don't know vs. what I found — targeted at people who already use the tool, so it feels personally relevant, not generic.","EMOTION TARGET: Surprise/curiosity
+HOOK (0-3s): Line above, on a real terminal screen recording — no intro, no face yet.
+BODY 1 (context): ""Most people install Claude Code, run a few prompts, and stop there."" (second-best point — sets the common ground)
+BUT: ""But the people getting 10x more out of it aren't smarter prompters. They installed one plugin you probably skipped.""
+BODY 2 (best point): Show the install command live, then a before/after: same task, without the plugin (manual, multi-step) vs. with it (one command, done). Name the plugin on screen as text (Term Branding).
+REHOOK: ""And that's not even the part that saves the most time.""
+BODY 3: Show the second-order benefit — e.g. it remembers context across sessions, so you stop re-explaining your codebase every morning.
+OUTRO: ""One install. Stop re-explaining yourself to your own tools."" Atomic takeaway on screen as final text card.",2026-08-20,false
+d3907846-952b-4e0e-bcb9-824d47e9c0fb,The AI Tools You Already Own,Investigator,@nick_saraev — 2.7M views (Google's 15 free AI tools),"Not 'here are 15 new AI tools' — the b-side: the AI features already sitting inside software people pay for monthly, unused, that quietly replace a $20-50/mo subscription.","SPOKEN HOOK: ""You are already paying for the AI tool you think you need to buy.""
+TEXT OVERLAY: ""You already own this""
+VISUAL DIRECTION: Screen recording opening a familiar everyday app (e.g. Google Docs / Notion), cursor navigating directly to a buried AI feature menu.
+AUDIO NOTE: A single 'ding' when the hidden feature is revealed.
+CURIOSITY LOOP: What am I paying twice for, and where is it hiding?
+WHY IT WORKS: Loss aversion — implies wasted money right now, not hypothetical future gain. Fear-based framing without stating ""you're wasting money"" directly.","EMOTION TARGET: Surprise/mild anger at wasted spend
+HOOK (0-3s): Line above over the buried-feature reveal.
+BODY 1: ""Everyone's comparing which $20/month AI subscription is 'best'."" (common belief)
+BUT: ""But the tool you already pay for every month has the same feature turned off by default.""
+BODY 2: Live click-through: turn the feature on, run one real task with it (e.g. summarize a doc, generate a draft), show the output.
+REHOOK: ""Here's the part that actually saves money.""
+BODY 3: Cancel-a-subscription moment — name the paid tool this replaces, show the monthly cost on screen, cross it out.
+OUTRO: ""Before you subscribe to anything new — check what you already have."" One-sentence takeaway card.",2026-08-20,false
+19159e62-c730-447a-a337-5cea9ef74518,The Scraper Nobody Warns You About,Contrarian,@nick_saraev — 564K views (Agent Reach — scrape without API keys),"The reference video sells the upside of API-key-free scraping tools. The b-side: the real risk (account bans, ToS violations, fragile access) nobody mentions when they hype 'free unlimited access.'","SPOKEN HOOK: ""Everyone's excited this tool scrapes any platform without an API key. That's exactly the part that should worry you.""
+TEXT OVERLAY: ""Free access has a price""
+VISUAL DIRECTION: Split screen — left: exciting demo of the tool pulling data instantly; right: a platform's ban/suspension notice.
+AUDIO NOTE: Upbeat sound on the demo side cuts to a flat, dead tone on the ban side.
+CURIOSITY LOOP: What's the actual catch behind ""free unlimited access""?
+WHY IT WORKS: Contrarian archetype — takes the exact enthusiasm from the original video and inverts it, which creates maximum contrast for viewers who saw similar hype elsewhere.","EMOTION TARGET: Surprise/skepticism
+HOOK (0-3s): Line above with the split-screen visual.
+BODY 1: ""No API key, no rate limits, scrape anything — sounds perfect."" (restate the common belief, W-order: what first)
+BUT: ""But 'no API key' usually means one thing: you're using the same access as a logged-in human, which platforms actively hunt for and shut down.""
+BODY 2: Walk through the actual mechanism in plain terms — session tokens, detection patterns — using one relatable metaphor (a fake ID vs. a real one).
+REHOOK: ""Here's what I'd actually check before running this on anything that matters.""
+BODY 3: Three concrete questions to vet any ""free unlimited"" AI tool before depending on it for real work.
+OUTRO: ""Free access that can vanish overnight isn't free — it's a loan."" Atomic takeaway.",2026-08-20,false
+d4bf8101-d9b9-4aa8-b8d0-73017ffc93af,The Real Cost of Outsourcing Your Brain to AI,Teacher,@nateherkai — 43.8K views (rap parody about Claude dependency),"Keeps the self-deprecating, funny visual energy of the original but reframes the joke as a real, useful diagnostic: how to tell if AI dependency is quietly eroding a skill you'll need later.","SPOKEN HOOK: ""I used to be able to write a for-loop without help. Now I can't remember the last time I did.""
+TEXT OVERLAY: ""Am I getting worse at this?""
+VISUAL DIRECTION: Creator mid-laugh/cringe at their own screen, cut to a real, slightly embarrassing screen-recording of a basic prompt they had to ask AI.
+AUDIO NOTE: Comedic sting on the cringe cut, then it drops out for the serious line.
+CURIOSITY LOOP: Is this actually a problem, or is it fine?
+WHY IT WORKS: Teacher archetype — failing state vs. the fix — but opened with self-deprecating humor so it doesn't feel preachy.","EMOTION TARGET: Amusement leading to self-recognition
+HOOK (0-3s): Line above, delivered mid-laugh at own expense.
+BODY 1: ""This isn't a 'stop using AI' video."" (defuse the obvious objection early)
+BUT: ""But there's a real difference between AI doing the boring 80% and AI doing the part where you'd actually learn something.""
+BODY 2: Give the one-question test: ""Could I explain what this code does to a junior teammate, right now, without looking?"" Show it applied live on a real snippet.
+REHOOK: ""Here's the fix that took me two minutes to build into my workflow.""
+BODY 3: Show a simple habit — asking AI to explain its own output in one line before accepting it — demonstrated on screen.
+OUTRO: ""Use it to go faster. Don't let it replace the part where you get better."" Atomic takeaway.",2026-08-20,false
+43e9747d-bfbe-4bcc-86d2-fdfd367814cf,I Cloned a $10K Website With One Prompt,Experimenter,"@nateherkai — 41K views (clone/redesign websites with Claude Code, no code)","Direct experimenter demo, same core idea as the reference, executed live with a real before/after and an honest accounting of what it actually took (not just the highlight reel).","SPOKEN HOOK: ""This website would've cost me ten grand from an agency. I built it with one prompt.""
+TEXT OVERLAY: ""$10,000 site. One prompt.""
+VISUAL DIRECTION: Split screen — original inspiration site on the left, the live-generated clone rendering in real time on the right.
+AUDIO NOTE: Typing/keyboard sound as the prompt is entered, then a satisfying ""load complete"" chime.
+CURIOSITY LOOP: Is this actually as good as it looks, or is there a catch?
+WHY IT WORKS: Experimenter archetype — real results, real timeframe — the strongest visual hook available for a tool demo.","EMOTION TARGET: Excitement/curiosity
+HOOK (0-3s): Line above over the live-render visual.
+BODY 1: ""I'm not a developer. I can barely read code."" (relatable character, no unfair advantage — desire-based framing)
+BUT: ""But I gave Claude Code one plain-English prompt describing the site I wanted, and this is what came back — unedited.""
+BODY 2: Show the actual prompt text on screen, then the generated result scrolling through, pointing out 2-3 specific details that match the brief.
+REHOOK: ""Now here's the honest part most people leave out.""
+BODY 3: Show what it did NOT get right on the first try, and the one follow-up prompt that fixed it — keeps it credible, not hype.
+OUTRO: ""The skill isn't coding anymore. It's knowing what to ask for."" Atomic takeaway.",2026-08-20,false
+fb9d0fdf-2612-40f9-95b6-94cfb6bf5c42,Your Prompts Aren't the Bottleneck,Teacher,@nateherkai — 39.8K views (800K subscribers via AI agent system),Reframes 'how I got 800K subscribers' away from a single creator's flex and into a teachable structural insight: most people optimize the wrong layer of their AI workflow.,"SPOKEN HOOK: ""You don't have a prompting problem. You have an architecture problem.""
+TEXT OVERLAY: ""It's not your prompts""
+VISUAL DIRECTION: A messy whiteboard-style diagram of ""one person, one chat window"" crossed out, replaced by a clean diagram of specialized agents connected in a pipeline.
+AUDIO NOTE: Marker-squeak sound effect on the crossed-out diagram.
+CURIOSITY LOOP: What's actually different about how the people who scale this are doing it?
+WHY IT WORKS: Contrast pivot on a belief almost every AI user holds (""I just need better prompts"") — high relevance to the target audience.","EMOTION TARGET: Awe/clarity
+HOOK (0-3s): Line above over the diagram reveal.
+BODY 1: ""Most people treat AI like one really smart intern in a single chat window."" (common belief, W-order: what first)
+BUT: ""But the people getting outsized results built a small system instead — one AI step handles research, a separate one handles drafting, a separate one handles review.""
+BODY 2: Walk through a concrete 3-step mini pipeline for a real task (e.g. content research → draft → edit), shown as a simple diagram with real tool names.
+REHOOK: ""Here's why this matters more than any single prompt trick.""
+BODY 3: Explain the compounding effect — each step is small and reliable, and reliability compounds across a pipeline in a way a single giant prompt never does.
+OUTRO: ""Stop upgrading your prompt. Start upgrading your pipeline."" Atomic takeaway.",2026-08-20,false
+ef777ab5-e69a-497a-8f9c-b508486a83bc,AI Teammates Are Already Hiring Themselves,Fortune Teller,@rpn — 354K views (Grok Bot digital teammates),Takes the product-launch news and reframes it forward — not 'here's a new feature' but 'here's what this means for how teams get built in the next 12 months.',"SPOKEN HOOK: ""In a year, half your team might be AI — and you won't even think of it that way.""
+TEXT OVERLAY: ""The team of one""
+VISUAL DIRECTION: A group-chat mockup where two of five ""teammates"" are visually tagged AI, indistinguishable in message style from the human ones.
+AUDIO NOTE: Notification pings, normal cadence — deliberately unremarkable to sell the ""you won't even notice"" idea.
+CURIOSITY LOOP: What does this actually change for how I work day to day?
+WHY IT WORKS: Fortune Teller — present vs. future — strongest for fast-moving product news, creates outsized curiosity about what's coming.","EMOTION TARGET: Awe/slight unease
+HOOK (0-3s): Line above over the group-chat mockup.
+BODY 1: ""Right now, 'using AI' still means opening a separate app and copy-pasting."" (current state)
+BUT: ""But the shift happening is AI teammates living inside the same group chats and tools your human team already uses — no separate workflow.""
+BODY 2: Show a concrete example: an AI teammate in a group chat handling a specific task (scheduling, research, first-draft) end to end, visible in the thread.
+REHOOK: ""Here's the part that actually changes how you should be hiring.""
+BODY 3: The real implication — the next hire you make might be a human who directs three AI teammates, not a human who does the task alone. Give one practical way to start testing this today.
+OUTRO: ""The org chart of the future has fewer boxes and more loops."" Atomic takeaway.",2026-08-20,false
+dc747f82-7059-47e5-8f5d-ff1e24eb8244,The Boring Use of a Flashy AI Trick,Experimenter,@rourke — 590K views (AI video-to-video zombie transformation),The original is an entertainment stunt. The b-side pulls the same underlying tech into a practical business use case a professional could actually use this week — a deliberate education-lane translation of an entertainment-lane reference.,"SPOKEN HOOK: ""Forget zombies — here's what this AI video tool actually does for your business.""
+TEXT OVERLAY: ""Same tech. Boring use. Real ROI.""
+VISUAL DIRECTION: Three-panel comparison — original raw product photo, AI-transformed ad-ready video, and a screen recording of the tool running.
+AUDIO NOTE: Quick, clean transition whoosh between panels — no dramatic music, deliberately understated.
+CURIOSITY LOOP: Can I actually use this for something practical, not just a viral stunt?
+WHY IT WORKS: Experimenter archetype with a deliberate lane switch (entertainment reference → education execution), which itself creates contrast against everything else covering this tool.","EMOTION TARGET: Curiosity/practical excitement
+HOOK (0-3s): Line above over the three-panel visual.
+BODY 1: ""Everyone's using this tool to turn phone clips into zombie movies."" (common belief / what everyone else is doing)
+BUT: ""But the exact same technology turns one flat product photo into a scroll-stopping ad — in about the same amount of time.""
+BODY 2: Live demo — one static product photo in, one short ad-ready clip out, with the actual prompt shown on screen.
+REHOOK: ""Here's the one setting that separates 'looks like AI' from 'looks like a real ad.'""
+BODY 3: Show the specific parameter/prompt tweak that fixes the uncanny-AI look, side by side.
+OUTRO: ""The viral use case and the useful use case are the same tool. Most people only find one."" Atomic takeaway.",2026-08-20,false
+fec1d0f4-6c49-4b0a-98d6-84be0e1180bb,I Used AI to Write My Own Hooks,Experimenter,@rourke — 513K views (viral hooks via Higgsfield + Claude),"A meta, recursive concept fitting for a creator whose whole channel is about content strategy — using AI specifically to generate and test hook variations, shown live.","SPOKEN HOOK: ""I stopped writing my own hooks. I have AI write ten, and I just pick the best one.""
+TEXT OVERLAY: ""10 hooks. 1 prompt.""
+VISUAL DIRECTION: Screen recording — a single prompt submitted, ten hook variations streaming onto the screen in real time.
+AUDIO NOTE: Rapid, rhythmic typing sound as the list populates.
+CURIOSITY LOOP: Are AI-written hooks actually any good, or is this a shortcut that backfires?
+WHY IT WORKS: Experimenter — real workflow, real output shown unedited — high relevance for anyone making content, which is this exact audience.","EMOTION TARGET: Curiosity/practical value
+HOOK (0-3s): Line above over the live-generation screen recording.
+BODY 1: ""Writing a hook used to mean staring at a blank line for twenty minutes."" (relatable pain point)
+BUT: ""But now I give AI the topic and the target archetype, and I get ten real options in under a minute.""
+BODY 2: Show the actual prompt template used, then three of the ten generated hooks read aloud, ranked live by which creates the most contrast.
+REHOOK: ""Here's the mistake that makes this backfire for most people.""
+BODY 3: Show a bad, generic AI hook next to a good one — explain the one input (specificity of the topic/archetype in the prompt) that makes the difference.
+OUTRO: ""AI won't find your hook. It'll show you which of yours actually works."" Atomic takeaway.",2026-08-20,false
+f5074454-8e98-489e-90e1-2f5b0ca02c72,The Company Nobody's Heard Of That Controls Every Chip,Investigator,@kallaway — 1.29M views (ASML explainer),Keeps the deep-dive investigator energy of the original but pulls the thread specifically toward AI infrastructure — who actually controls the compute the entire AI boom depends on.,"SPOKEN HOOK: ""Every AI company you've heard of depends completely on one company you've probably never heard of.""
+TEXT OVERLAY: ""The company behind the boom""
+VISUAL DIRECTION: Logo wall of famous AI companies (OpenAI, Nvidia, etc.) zooming out to reveal one small, unfamiliar logo underneath all of them.
+AUDIO NOTE: Building tension hit as the camera zooms out to the reveal.
+CURIOSITY LOOP: Who is this, and why does no one talk about them?
+WHY IT WORKS: Investigator archetype — hidden opportunity/risk framing — huge relevance for a tech-savvy audience that follows AI news closely but likely doesn't know this specific supply-chain layer.","EMOTION TARGET: Awe/surprise
+HOOK (0-3s): Line above over the logo-wall reveal.
+BODY 1: ""Everyone's watching the AI model race — who has the smartest chatbot."" (common belief, current focus)
+BUT: ""But none of those models exist without one machine that only one company on Earth can build.""
+BODY 2: Plain-language explainer of what that machine actually does, using one metaphor a non-engineer can hold onto (e.g. ""printing press for chips"").
+REHOOK: ""Here's the part that should actually worry — or excite — you.""
+BODY 3: The strategic implication — a single point of failure in the entire AI supply chain, and what that means for anyone building a business on top of AI tools.
+OUTRO: ""The real AI race isn't happening where you're watching."" Atomic takeaway.",2026-08-20,false
+dd06a8e0-e611-415d-81a7-95afde35336d,I Built My Whole Setup for $0,Contrarian,@azurtejada — 57.6K views x2 (SubwayTakes zero-budget format),"Borrows the 'constraint is the advantage' story format and applies the same structural insight directly to an AI content or workflow setup, contradicting the belief that good output needs expensive tools.","SPOKEN HOOK: ""Everyone thinks you need a $2,000 setup to do this. I did it with what's already on your laptop.""
+TEXT OVERLAY: ""$0 setup. Same result.""
+VISUAL DIRECTION: A cluttered desk of expensive gear crossed out in red, cutting to a single laptop with nothing else on the desk.
+AUDIO NOTE: Cash-register 'cha-ching' sound reversed/undone on the crossed-out gear.
+CURIOSITY LOOP: How is this actually possible without the expensive tools?
+WHY IT WORKS: Contrarian — challenges the specific, widely-held belief that better output requires better/more expensive tools — strong identity relevance for anyone gatekept by budget.","EMOTION TARGET: Surprise/inspiration
+HOOK (0-3s): Line above over the gear-crossed-out visual.
+BODY 1: ""The advice everywhere is: get a better mic, better camera, better software first."" (common belief)
+BUT: ""But constraint is what actually forces the good idea — the moment you can't hide behind production value, the idea has to carry it.""
+BODY 2: Walk through the actual $0 setup used, mapped one-to-one against the ""premium"" version, showing the output is comparable.
+REHOOK: ""Here's the one thing that's worth spending on, once this works.""
+BODY 3: The single highest-leverage upgrade to make only after proving the idea works with nothing — reordering the sequence people usually get backwards.
+OUTRO: ""Buy the upgrade after it works, not before."" Atomic takeaway.",2026-08-20,false
+e84f59d3-72d0-4cb5-8fff-ac22741fc755,Plan a Week of Content in 20 Minutes With AI,Teacher,@azurtejada — 33.1K views (20-minute content planning workflow),"Direct, high-value workflow demo — takes the human planning system from the reference and layers in an AI step, giving a concrete, replicable system rather than a vague tip.","SPOKEN HOOK: ""I plan an entire week of content in twenty minutes. Here's the exact system.""
+TEXT OVERLAY: ""20 minutes. One week planned.""
+VISUAL DIRECTION: A visible timer running in the corner of the screen throughout, desk setup, notebook and a single AI chat window open.
+AUDIO NOTE: Soft ticking clock sound, subtle, under the whole clip.
+CURIOSITY LOOP: What's actually in this system that makes it that fast?
+WHY IT WORKS: Teacher archetype — failing state (content planning takes hours / feels chaotic) vs. the fix — builds authority through a specific, timed, repeatable process.","EMOTION TARGET: Relief/practical clarity
+HOOK (0-3s): Line above, timer visibly starting at 0:00.
+BODY 1: ""Most people either wing it every day or spend a whole Sunday planning content."" (common failure states, both extremes)
+BUT: ""But the system that actually works takes twenty minutes, once, and covers the whole week.""
+BODY 2: Show the three steps live with the timer running: (1) dump raw ideas into AI unfiltered, (2) AI clusters them into a week's worth of angles, (3) pick and lock five.
+REHOOK: ""Here's the step most people skip that makes the whole week fall apart without it.""
+BODY 3: The filtering step — cutting ideas that don't fit the single topic lane — shown as a concrete example of a cut idea and why.
+OUTRO: ""Planning isn't the hard part. Deciding what NOT to make is."" Atomic takeaway.",2026-08-20,false
+198e01d9-d2c2-42e9-8f4f-bb22b1dc4389,The Second Brain That Actually Remembers For You,Experimenter,@withkyndall — 8.1K / 3.7K views (Telegram AI second-brain bot),"Keeps the quirky, memorable visual gimmick from the reference but sharpens it into a fully practical automation build a viewer could copy this week.","SPOKEN HOOK: ""My best ideas show up when I'm nowhere near my laptop. So I built something that catches them for me.""
+TEXT OVERLAY: ""It remembers so I don't have to""
+VISUAL DIRECTION: Creator talking into a phone voice-memo mid-walk, cut to a screen recording of that voice memo appearing, transcribed and organized, inside a notes app minutes later.
+AUDIO NOTE: Street/outdoor ambience on the walk shot, cutting to clean studio silence on the screen recording.
+CURIOSITY LOOP: How does the idea actually get from a random voice memo to organized notes automatically?
+WHY IT WORKS: Experimenter archetype — real, personal, low-friction workflow — strong relevance for anyone who's ever lost a good idea.","EMOTION TARGET: Relief/practical value
+HOOK (0-3s): Line above over the walk-and-talk visual.
+BODY 1: ""I used to lose half my best ideas because I wasn't at my computer when I had them."" (relatable pain point)
+BUT: ""But now I just talk to my phone, and it ends up organized before I even sit back down.""
+BODY 2: Show the actual pipeline: voice memo → AI transcription → auto-tagged and dropped into a notes system, timestamps visible so it's clearly not staged.
+REHOOK: ""Here's the setting that makes this actually usable instead of just a pile of transcripts.""
+BODY 3: The organizing/tagging step that turns raw transcripts into something searchable later — the detail that makes it a system, not a gimmick.
+OUTRO: ""Capture beats memory, every time."" Atomic takeaway.",2026-08-20,false
+55e2d5bf-1d1d-40fa-9d2a-324d4b196c84,Everyone's Selling AI Courses. Here's What Actually Pays.,Contrarian,@azurtejada — 41.7K views (7 ways to monetize content),"Applies the monetization-roadmap format to the AI-content niche specifically, contradicting the current wave of 'sell an AI prompt course' advice with what's actually converting.","SPOKEN HOOK: ""Every AI creator right now is trying to sell you a prompt course. That's not where the money actually is.""
+TEXT OVERLAY: ""It's not the course""
+VISUAL DIRECTION: A scroll through several generic ""AI prompts course"" thumbnails, crossed out one by one, ending on a single different revenue source highlighted.
+AUDIO NOTE: Quick 'X' sound effect on each crossed-out thumbnail.
+CURIOSITY LOOP: If not courses, then what is actually working?
+WHY IT WORKS: Contrarian — challenges the exact trend the target audience sees flooding their feed daily, high topical relevance.","EMOTION TARGET: Surprise/practical clarity
+HOOK (0-3s): Line above over the crossed-out thumbnails.
+BODY 1: ""Prompt courses are everywhere right now — feels like the obvious move."" (common belief)
+BUT: ""But most of them are selling to an audience that's already saturated with the same 50 prompts repackaged.""
+BODY 2: Name the revenue path that's actually converting instead (e.g. done-for-you implementation, or a specific tool/service layered on top of the content) with one real, concrete example.
+REHOOK: ""Here's the one signal that tells you which path is right for your audience.""
+BODY 3: A simple diagnostic — what your audience actually DMs you asking for is the real product-market signal, not what's trending to sell.
+OUTRO: ""Sell what people are already asking for, not what's trending to sell."" Atomic takeaway.",2026-08-20,false
+937721a3-aa0e-41dd-a155-2bbde22a5a45,I Replaced Part of My Job With AI. Here's the Real Math.,Investigator,@jose.horatio / @alessyleblanc — career-pivot narratives (713K / 205K views),"Adapts the vulnerable 'I quit my job' narrative format into a data-driven AI story — not quitting a job, but a transparent, numbers-based account of automating one real task and what it actually saved or cost.","SPOKEN HOOK: ""I automated the part of my job I hated most. Here's exactly what it saved me — and what it cost.""
+TEXT OVERLAY: ""The real math""
+VISUAL DIRECTION: A simple on-screen ledger — hours before, hours after, tool cost — filling in live as the creator talks, direct to camera.
+AUDIO NOTE: A calculator-tick sound effect as each number fills in.
+CURIOSITY LOOP: Does the math actually work out, or is this exaggerated like everything else in AI content?
+WHY IT WORKS: Investigator + desire-based hook — a relatable character (someone with a task they hate) showing a real, replicable outcome, no unfair advantage.","EMOTION TARGET: Curiosity/trust
+HOOK (0-3s): Line above over the live ledger.
+BODY 1: ""I'm not going to tell you AI saved my life or replaced my whole job."" (defuses hype, sets honest tone — W-order: what first)
+BUT: ""But I tracked one specific task for 30 days, before and after automating it, and the numbers actually surprised me.""
+BODY 2: Walk through the specific task, the before-time, the after-time, and the actual tool cost — full transparency, including the setup time it took upfront.
+REHOOK: ""Here's the part nobody mentions in these videos.""
+BODY 3: The honest tradeoff — what got worse or what still needs a human check, so it doesn't feel like a sales pitch.
+OUTRO: ""Automate the task, not the judgment."" Atomic takeaway.",2026-08-20,false

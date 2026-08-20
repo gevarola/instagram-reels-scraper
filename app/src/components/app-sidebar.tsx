@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Film, Play, Users, Settings2 } from "lucide-react";
+import { Film, Play, Users, Settings2, Lightbulb, Search } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,8 +18,10 @@ import {
 
 const navItems = [
   { title: "Videos", href: "/videos", icon: Film },
+  { title: "Content Ideas", href: "/content-ideas", icon: Lightbulb },
   { title: "Run Pipeline", href: "/run", icon: Play },
   { title: "Creators", href: "/creators", icon: Users },
+  { title: "Discover", href: "/discover", icon: Search },
   { title: "Configs", href: "/configs", icon: Settings2 },
 ];
 

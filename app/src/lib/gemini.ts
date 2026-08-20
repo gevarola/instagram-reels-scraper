@@ -11,8 +11,29 @@ const GEMINI_UPLOAD_URL = "https://generativelanguage.googleapis.com/upload/v1be
 // cheaper per token if you are watching cost. Check what your key can actually
 // reach with:
 //   curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY"
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const GEMINI_GENERATE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const CONFIGURED_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
+// Free-tier daily quotas are set per model, and the newest/flagship models
+// get the smallest ones (seen as low as 20 requests/day). When the
+// configured model runs dry mid-run, retrying it just wastes time — the
+// quota does not reset until midnight Pacific. So on a *daily* quota error
+// specifically (not a per-minute one, which does recover), analyzeVideo
+// rotates to the next model in this list instead of failing the batch.
+// Lite-tier models carry much higher free daily limits, which is why they
+// fill out the rest of the chain.
+const MODEL_FALLBACK_CHAIN = Array.from(
+  new Set([
+    CONFIGURED_MODEL,
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-2.5-flash-lite",
+    "gemini-3.6-flash",
+  ])
+);
+
+function generateUrl(model: string): string {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
 
 function getApiKey(): string {
   const key = process.env.GEMINI_API_KEY;
@@ -80,59 +101,83 @@ async function waitForFileActive(fileName: string, maxWaitMs = 120000): Promise<
   throw new Error(`Gemini file ${fileName} did not become ACTIVE within ${maxWaitMs / 1000}s`);
 }
 
+/** Google's quotaId names the window it's tracking, e.g.
+ * "GenerateRequestsPerDayPerProjectPerModel-FreeTier" vs "...PerMinute...".
+ * Only the daily one is worth switching models over — a per-minute 429
+ * clears on its own well inside a normal backoff retry. */
+function isDailyQuotaExhausted(status: number, body: string): boolean {
+  return status === 429 && /PerDay/i.test(body);
+}
+
 export async function analyzeVideo(
   fileUri: string,
   mimeType: string,
   analysisPrompt: string,
-  maxRetries = 3
+  maxRetries = 3,
+  onModelSwitch?: (fromModel: string, toModel: string) => void
 ): Promise<string> {
   const key = getApiKey();
 
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      const response = await fetch(`${GEMINI_GENERATE_URL}?key=${key}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                { fileData: { fileUri, mimeType } },
-                { text: analysisPrompt },
-              ],
-            },
-          ],
-        }),
-      });
+  let lastError: Error | null = null;
 
-      if (!response.ok) {
-        const text = await response.text();
+  for (let modelIndex = 0; modelIndex < MODEL_FALLBACK_CHAIN.length; modelIndex++) {
+    const model = MODEL_FALLBACK_CHAIN[modelIndex];
+    const url = generateUrl(model);
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const response = await fetch(`${url}?key=${key}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  { fileData: { fileUri, mimeType } },
+                  { text: analysisPrompt },
+                ],
+              },
+            ],
+          }),
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+
+          if (isDailyQuotaExhausted(response.status, text)) {
+            lastError = new Error(explainGeminiError(response.status, text, model));
+            const nextModel = MODEL_FALLBACK_CHAIN[modelIndex + 1];
+            if (nextModel) onModelSwitch?.(model, nextModel);
+            break; // stop retrying this model, fall through to the next one
+          }
+
+          if (attempt < maxRetries - 1) {
+            // Back off further each time instead of a flat 5s. A per-minute
+            // 429 or a transient 503 recovers on its own, so the point is to
+            // wait longer, not to hammer the same limit three times.
+            await new Promise((r) => setTimeout(r, backoffMs(attempt)));
+            continue;
+          }
+          throw new Error(explainGeminiError(response.status, text, model));
+        }
+
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        // Strip everything before first # (same as n8n workflow)
+        const hashIndex = text.indexOf("#");
+        return hashIndex >= 0 ? text.substring(hashIndex) : text;
+      } catch (error) {
         if (attempt < maxRetries - 1) {
-          // Back off further each time instead of a flat 5s. A 429 means a
-          // per-minute quota, so the whole point is to wait longer, not to
-          // hammer the same limit three times and give up.
           await new Promise((r) => setTimeout(r, backoffMs(attempt)));
           continue;
         }
-        throw new Error(explainGeminiError(response.status, text));
+        lastError = error instanceof Error ? error : new Error(String(error));
       }
-
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      // Strip everything before first # (same as n8n workflow)
-      const hashIndex = text.indexOf("#");
-      return hashIndex >= 0 ? text.substring(hashIndex) : text;
-    } catch (error) {
-      if (attempt < maxRetries - 1) {
-        await new Promise((r) => setTimeout(r, backoffMs(attempt)));
-        continue;
-      }
-      throw error;
     }
   }
 
-  throw new Error("Gemini analysis failed after retries");
+  throw lastError || new Error("Gemini analysis failed after retries");
 }
 
 /** 2s, 4s, 8s, 16s, plus a little jitter so parallel videos do not resync. */
@@ -145,19 +190,27 @@ function backoffMs(attempt: number): number {
  * three are the ones people actually hit, and the raw JSON body tells them
  * nothing about what to do next.
  */
-function explainGeminiError(status: number, body: string): string {
+function explainGeminiError(status: number, body: string, model: string): string {
   if (status === 429) {
+    if (isDailyQuotaExhausted(status, body)) {
+      return (
+        `Gemini daily quota exhausted on every model in the fallback chain ` +
+        `(${MODEL_FALLBACK_CHAIN.join(", ")}). All of them are out for today. ` +
+        `Wait for the reset at midnight Pacific, or turn on billing at ` +
+        `https://aistudio.google.com/apikey to raise the limits. Your current ` +
+        `limits: https://aistudio.google.com/rate-limit\n\n${body}`
+      );
+    }
     return (
-      `Gemini rate limit (429) on model ${GEMINI_MODEL}. You hit a per-minute or ` +
-      `per-day quota on your Google AI key, not a bug in this project. Either run ` +
-      `fewer videos per go, wait and try again (the daily quota resets at midnight ` +
-      `Pacific), or turn on billing at https://aistudio.google.com/apikey to raise ` +
-      `the limits. Your current limits: https://aistudio.google.com/rate-limit\n\n${body}`
+      `Gemini rate limit (429) on model ${model}. You hit a per-minute quota on ` +
+      `your Google AI key, not a bug in this project. Either run fewer videos per ` +
+      `go, wait and try again, or turn on billing at https://aistudio.google.com/apikey ` +
+      `to raise the limits. Your current limits: https://aistudio.google.com/rate-limit\n\n${body}`
     );
   }
   if (status === 404) {
     return (
-      `Gemini says model "${GEMINI_MODEL}" does not exist (404). Google retires ` +
+      `Gemini says model "${model}" does not exist (404). Google retires ` +
       `models, so this name may have been switched off. List the ones your key can ` +
       `reach with: curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY" ` +
       `then set GEMINI_MODEL in .env to one of them.\n\n${body}`

@@ -2,7 +2,7 @@ import { parse } from "csv-parse/sync";
 import { stringify } from "csv-stringify/sync";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import path from "path";
-import type { Config, Creator, Video } from "./types";
+import type { Config, Creator, Video, ContentIdea } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "..", "data");
 
@@ -89,4 +89,26 @@ export function appendVideo(video: Video) {
   const videos = readVideos();
   videos.push(video);
   writeVideos(videos);
+}
+
+// Content Ideas
+const CONTENT_IDEA_COLUMNS = ["id", "title", "archetype", "sourceInspiration", "premise", "hook", "script", "createdAt", "starred"];
+
+export function readContentIdeas(): ContentIdea[] {
+  const raw = readCsv<Record<string, string>>("content-ideas.csv");
+  return raw.map((r) => ({
+    id: r.id || "",
+    title: r.title || "",
+    archetype: r.archetype || "",
+    sourceInspiration: r.sourceInspiration || "",
+    premise: r.premise || "",
+    hook: r.hook || "",
+    script: r.script || "",
+    createdAt: r.createdAt || "",
+    starred: r.starred === "true",
+  }));
+}
+
+export function writeContentIdeas(ideas: ContentIdea[]) {
+  writeCsv("content-ideas.csv", ideas as unknown as Record<string, unknown>[], CONTENT_IDEA_COLUMNS);
 }

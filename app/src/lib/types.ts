@@ -33,6 +33,18 @@ export interface Video {
   starred: boolean;
 }
 
+export interface ContentIdea {
+  id: string;
+  title: string;
+  archetype: string;
+  sourceInspiration: string;
+  premise: string;
+  hook: string;
+  script: string;
+  createdAt: string;
+  starred: boolean;
+}
+
 export interface PipelineParams {
   configName: string;
   maxVideos: number;

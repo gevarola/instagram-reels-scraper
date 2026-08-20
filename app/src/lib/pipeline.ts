@@ -18,6 +18,29 @@ interface ScrapedVideo {
   datePosted: string;
 }
 
+/**
+ * Video downloads hit Meta's CDN directly and occasionally get a reset
+ * connection or DNS blip — a transient network error, not a dead link (dead
+ * links come back with an HTTP status, which this does not retry on). Same
+ * 2s/4s/8s backoff already used for Gemini calls in gemini.ts.
+ */
+async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fetch(url);
+    } catch (err) {
+      if (attempt < maxRetries - 1) {
+        await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, attempt)));
+        continue;
+      }
+      const cause = err instanceof Error && err.cause ? ` (${String(err.cause)})` : "";
+      const msg = err instanceof Error ? err.message : String(err);
+      throw new Error(`${msg}${cause}`);
+    }
+  }
+  throw new Error("unreachable");
+}
+
 async function runWithConcurrency<T>(
   items: T[],
   concurrency: number,
@@ -164,7 +187,7 @@ export async function runPipeline(
       try {
         addTask({ id: taskId, creator: video.username, step: "Downloading", views: video.views });
 
-        const videoResponse = await fetch(video.videoUrl);
+        const videoResponse = await fetchWithRetry(video.videoUrl);
         if (!videoResponse.ok) throw new Error(`Download failed: ${videoResponse.status}`);
         const videoBuffer = Buffer.from(await videoResponse.arrayBuffer());
         const contentType = videoResponse.headers.get("content-type") || "video/mp4";
@@ -180,7 +203,10 @@ export async function runPipeline(
         const analysis = await analyzeVideo(
           fileData.uri,
           fileData.mimeType,
-          config.analysisInstruction
+          config.analysisInstruction,
+          undefined,
+          (fromModel, toModel) =>
+            log(`@${video.username} (${label}): ${fromModel} hit its daily quota, switching to ${toModel}`)
         );
 
         updateTask(taskId, "Claude generating concepts");
