@@ -4,7 +4,7 @@ Find the Reels that are working in your niche, understand why, and get new conce
 
 It scrapes a list of competitors' recent Instagram videos, picks the most viral ones, has an AI watch them and break them down shot by shot, then writes fresh video concepts adapted to you.
 
-Full walkthrough: **[oleg.ae/claude-reels](https://oleg.ae/claude-reels)**
+Forked from [Oleg Melnikov's original social-media project](https://github.com/melnikoff-oleg/social-media), with personal upgrades: creator discovery (keyword + related-accounts search), a content-ideas hub built on the Kallaway hooks/storytelling frameworks, automatic Gemini model fallback on quota limits, and retry hardening on video downloads.
 
 ---
 
@@ -14,8 +14,8 @@ You need [Node.js](https://nodejs.org) (LTS) and three API keys.
 
 ```bash
 # 1. get the code
-git clone https://github.com/melnikoff-oleg/social-media.git
-cd social-media
+git clone https://github.com/Victorhhquezada/instagram-reels-scraper.git
+cd instagram-reels-scraper
 
 # 2. make your .env from the template
 cp .env.example .env        # Windows PowerShell: Copy-Item .env.example .env
@@ -179,4 +179,4 @@ shell-aliases.md    the cs / cr shortcuts explained
 
 ---
 
-Built by [Oleg Melnikov](https://oleg.ae). More free guides and tools: [oleg.ae](https://oleg.ae)
+Originally built by [Oleg Melnikov](https://github.com/melnikoff-oleg/social-media); this fork adds the features described above.
