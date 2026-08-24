@@ -209,10 +209,14 @@ export async function runPipeline(
             log(`@${video.username} (${label}): ${fromModel} hit its daily quota, switching to ${toModel}`)
         );
 
-        updateTask(taskId, "Claude generating concepts");
-        log(`@${video.username} (${label}): Claude generating concepts`);
-
-        const newConcepts = await generateNewConcepts(analysis, config.newConceptsInstruction);
+        let newConcepts = "";
+        if (process.env.ANTHROPIC_API_KEY) {
+          updateTask(taskId, "Claude generating concepts");
+          log(`@${video.username} (${label}): Claude generating concepts`);
+          newConcepts = await generateNewConcepts(analysis, config.newConceptsInstruction);
+        } else {
+          log(`@${video.username} (${label}): no ANTHROPIC_API_KEY set, skipping concept generation`);
+        }
 
         const videoRecord: Video = {
           id: uuid(),
