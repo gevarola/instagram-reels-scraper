@@ -41,13 +41,23 @@ npm run dev
 
 ### Pipeline Overview
 
-1. **Input** — Select a config and parameters (max videos, top-K, days lookback) via the Run page
+The pipeline is split into two stages so that AI cost (Gemini + Claude) is only
+spent on videos someone actually chooses to look at, instead of every scraped
+video up front.
+
+**Stage 1 — Run Pipeline (`/run`, `lib/pipeline.ts`): scrape and save, no AI**
+
+1. **Input** — Select a config and parameters (max videos per creator, days lookback) via the Run page
 2. **Load Config** — Retrieve analysis prompt, new concepts prompt, and creator list from CSV
 3. **Scrape** — For each competitor creator, scrape recent Instagram Reels via Apify
-4. **Filter & Rank** — Filter by date, sort by views, take top-K most viral
-5. **Analyze** — Download video, upload to Gemini, analyze (extracts Concept, Hook, Retention, Reward, Script)
-6. **Generate** — Send analysis + brand context to Claude for adapted video concepts
-7. **Save** — Append results to `data/videos.csv`, viewable in the Videos page with thumbnails
+4. **Filter** — Keep every reel posted within the lookback window (no per-creator top-K cutoff — if 10 creators each posted 10 reels this month, all 100 get saved)
+5. **Save** — Append metrics-only rows (views, likes, comments, thumbnail, link) to `data/videos.csv`, skipping posts already saved from a prior run. `analysis`/`newConcepts` are left blank.
+
+**Stage 2 — Analyze on demand (Videos page, `/api/videos/analyze`)**
+
+1. The Videos page lists everything from `data/videos.csv` sorted by views (most viral first, per creator).
+2. A video with no analysis yet shows an **"Analyze with AI"** button instead of Analysis/Concepts.
+3. Clicking it re-scrapes that one post via Apify (the original `videoUrl` is a signed CDN link that expires in hours, so it can't be stored and reused later), downloads the video, uploads it to Gemini, analyzes it (Concept, Hook, Retention, Reward, Script), then sends that analysis to Claude for adapted concepts — and writes both back into that video's row.
 
 ### Two Customizable Prompts Per Config
 

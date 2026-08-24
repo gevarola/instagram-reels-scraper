@@ -6,7 +6,7 @@ import type { PipelineProgress } from "@/lib/types";
 interface PipelineContextValue {
   running: boolean;
   progress: PipelineProgress | null;
-  runPipeline: (params: { configName: string; maxVideos: number; topK: number; nDays: number }) => void;
+  runPipeline: (params: { configName: string; maxVideos: number; nDays: number }) => void;
 }
 
 const PipelineContext = createContext<PipelineContextValue | null>(null);
@@ -16,7 +16,7 @@ export function PipelineProvider({ children }: { children: React.ReactNode }) {
   const [progress, setProgress] = useState<PipelineProgress | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
-  const runPipeline = useCallback(async (params: { configName: string; maxVideos: number; topK: number; nDays: number }) => {
+  const runPipeline = useCallback(async (params: { configName: string; maxVideos: number; nDays: number }) => {
     if (running) return;
     setRunning(true);
     setProgress(null);
@@ -59,7 +59,7 @@ export function PipelineProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       if ((err as Error).name === "AbortError") return;
       setProgress((prev) => ({
-        ...(prev || { phase: "done" as const, activeTasks: [], creatorsCompleted: 0, creatorsTotal: 0, creatorsScraped: 0, videosAnalyzed: 0, videosTotal: 0, log: [] }),
+        ...(prev || { phase: "done" as const, activeTasks: [], creatorsCompleted: 0, creatorsTotal: 0, creatorsScraped: 0, videosSaved: 0, log: [] }),
         status: "error" as const,
         errors: [err instanceof Error ? err.message : "Unknown error"],
       }));

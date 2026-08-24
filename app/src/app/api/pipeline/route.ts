@@ -19,12 +19,9 @@ export async function POST(request: Request) {
           status: "error",
           errors: [err instanceof Error ? err.message : "Unknown error"],
           log: [],
-          currentCreator: "",
-          currentStep: "",
           creatorsCompleted: 0,
           creatorsTotal: 0,
-          videosAnalyzed: 0,
-          videosTotal: 0,
+          videosSaved: 0,
         })}\n\n`;
         controller.enqueue(encoder.encode(errorData));
       } finally {

@@ -28,7 +28,6 @@ export default function RunPage() {
   const [configs, setConfigs] = useState<Config[]>([]);
   const [selectedConfig, setSelectedConfig] = useState("");
   const [maxVideos, setMaxVideos] = useState(20);
-  const [topK, setTopK] = useState(3);
   const [nDays, setNDays] = useState(30);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
@@ -45,13 +44,11 @@ export default function RunPage() {
 
   const handleRun = () => {
     if (!selectedConfig) return;
-    runPipeline({ configName: selectedConfig, maxVideos, topK, nDays });
+    runPipeline({ configName: selectedConfig, maxVideos, nDays });
   };
 
   const totalProgress = progress
-    ? progress.phase === "scraping"
-      ? progress.creatorsTotal > 0 ? (progress.creatorsScraped / progress.creatorsTotal) * 40 : 0
-      : progress.videosTotal > 0 ? 40 + (progress.videosAnalyzed / progress.videosTotal) * 60 : 40
+    ? progress.creatorsTotal > 0 ? (progress.creatorsScraped / progress.creatorsTotal) * 100 : 0
     : 0;
 
   return (
@@ -59,7 +56,7 @@ export default function RunPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Run Pipeline</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Analyze competitor content and generate new video concepts
+          Scrape competitor reels and save their metrics — AI analysis runs per-video from the Videos page
         </p>
       </div>
 
@@ -94,7 +91,7 @@ export default function RunPage() {
           </button>
 
           {showAdvanced && (
-            <div className="grid gap-4 md:grid-cols-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="grid gap-4 md:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <div>
                 <Label className="text-xs text-muted-foreground">Max Videos per Creator</Label>
                 <Input
@@ -103,17 +100,6 @@ export default function RunPage() {
                   onChange={(e) => setMaxVideos(Number(e.target.value))}
                   min={1}
                   max={100}
-                  className="mt-1.5 rounded-xl glass border-white/[0.08] h-11"
-                />
-              </div>
-              <div>
-                <Label className="text-xs text-muted-foreground">Top K to Analyze</Label>
-                <Input
-                  type="number"
-                  value={topK}
-                  onChange={(e) => setTopK(Number(e.target.value))}
-                  min={1}
-                  max={10}
                   className="mt-1.5 rounded-xl glass border-white/[0.08] h-11"
                 />
               </div>
@@ -163,18 +149,15 @@ export default function RunPage() {
                 {progress.status === "completed" && <CheckCircle2 className="h-4 w-4 text-emerald-400" />}
                 {progress.status === "error" && <XCircle className="h-4 w-4 text-red-400" />}
                 <h2 className="text-sm font-semibold">
-                  {progress.status === "running" && progress.phase === "scraping" && "Scraping creators..."}
-                  {progress.status === "running" && progress.phase === "analyzing" && "Analyzing videos..."}
+                  {progress.status === "running" && "Scraping creators..."}
                   {progress.status === "completed" && "Pipeline complete"}
                   {progress.status === "error" && "Pipeline failed"}
                 </h2>
               </div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                {progress.phase === "scraping" && (
-                  <span>Creators: <span className="text-foreground">{progress.creatorsScraped}/{progress.creatorsTotal}</span></span>
-                )}
-                {(progress.phase === "analyzing" || progress.phase === "done") && (
-                  <span>Videos: <span className="text-foreground">{progress.videosAnalyzed}/{progress.videosTotal}</span></span>
+                <span>Creators: <span className="text-foreground">{progress.creatorsScraped}/{progress.creatorsTotal}</span></span>
+                {progress.phase === "done" && (
+                  <span>Videos saved: <span className="text-foreground">{progress.videosSaved}</span></span>
                 )}
                 {progress.errors.length > 0 && (
                   <span className="inline-flex items-center gap-1 text-red-400">
@@ -223,11 +206,11 @@ export default function RunPage() {
             )}
 
             {/* Completion CTA */}
-            {progress.status === "completed" && progress.videosAnalyzed > 0 && (
+            {progress.status === "completed" && progress.videosSaved > 0 && (
               <Button asChild className="w-full rounded-xl h-11 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 border-0 font-semibold gap-2">
                 <Link href="/videos">
                   <Film className="h-4 w-4" />
-                  View {progress.videosAnalyzed} New Videos
+                  View {progress.videosSaved} New Videos
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

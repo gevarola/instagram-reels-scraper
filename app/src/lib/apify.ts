@@ -166,6 +166,38 @@ export async function scrapeReels(
   return data as ApifyReel[];
 }
 
+/** Fetches a fresh copy of a single already-known reel by its Instagram post
+ * URL. Used for on-demand AI analysis: the `videoUrl` Apify returns is a
+ * signed Meta CDN link that expires within hours, so it can't be stored in
+ * videos.csv and reused whenever a user later clicks "Analyze" — this
+ * re-scrapes the post right before download to get a link that's still
+ * valid. */
+export async function scrapeSingleReel(postUrl: string): Promise<ApifyReel | null> {
+  const token = getToken();
+
+  const response = await fetch(
+    `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=${token}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        addParentData: false,
+        directUrls: [postUrl],
+        resultsType: "stories",
+        resultsLimit: 1,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Apify error ${response.status}: ${text}`);
+  }
+
+  const data = (await response.json()) as ApifyReel[];
+  return data[0] || null;
+}
+
 export async function scrapeCreatorStats(username: string): Promise<CreatorStats> {
   const token = getToken();
 

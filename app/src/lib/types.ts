@@ -48,7 +48,6 @@ export interface ContentIdea {
 export interface PipelineParams {
   configName: string;
   maxVideos: number;
-  topK: number;
   nDays: number;
 }
 
@@ -61,13 +60,12 @@ export interface ActiveTask {
 
 export interface PipelineProgress {
   status: "idle" | "running" | "completed" | "error";
-  phase: "scraping" | "analyzing" | "done";
+  phase: "scraping" | "done";
   activeTasks: ActiveTask[];
   creatorsCompleted: number;
   creatorsTotal: number;
   creatorsScraped: number;
-  videosAnalyzed: number;
-  videosTotal: number;
+  videosSaved: number;
   errors: string[];
   log: string[];
 }

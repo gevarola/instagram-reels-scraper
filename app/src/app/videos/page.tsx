@@ -16,7 +16,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Film, Sparkles, Search, Star, Play, ArrowUpDown, X, ExternalLink } from "lucide-react";
+import { Heart, MessageCircle, Film, Sparkles, Search, Star, Play, ArrowUpDown, X, ExternalLink, Wand2, Loader2 } from "lucide-react";
 import { MarkdownContent } from "@/components/markdown-content";
 import type { Video, Config } from "@/lib/types";
 
@@ -45,6 +45,8 @@ function VideosContent() {
   const [sortBy, setSortBy] = useState<SortOption>("views");
   const [modalVideo, setModalVideo] = useState<Video | null>(null);
   const [modalSection, setModalSection] = useState<"analysis" | "concepts">("analysis");
+  const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
+  const [analyzeErrors, setAnalyzeErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetch("/api/videos").then((r) => r.json()).then(setVideos);
@@ -73,6 +75,34 @@ function VideosContent() {
   const openModal = (video: Video, section: "analysis" | "concepts") => {
     setModalVideo(video);
     setModalSection(section);
+  };
+
+  const analyzeVideo = async (id: string) => {
+    setAnalyzingIds((prev) => new Set(prev).add(id));
+    setAnalyzeErrors((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+
+    try {
+      const res = await fetch("/api/videos/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Analysis failed");
+      setVideos((prev) => prev.map((v) => (v.id === id ? data : v)));
+    } catch (err) {
+      setAnalyzeErrors((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : "Analysis failed" }));
+    } finally {
+      setAnalyzingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   };
 
   const toggleStar = async (id: string, currentStarred: boolean) => {
@@ -210,26 +240,53 @@ function VideosContent() {
                   </Badge>
 
                   {/* Action buttons */}
-                  <div className="flex gap-1.5 pt-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => openModal(video, "analysis")}
-                      className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
-                    >
-                      <Search className="h-3 w-3" />
-                      Analysis
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => openModal(video, "concepts")}
-                      className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
-                    >
-                      <Sparkles className="h-3 w-3" />
-                      Concepts
-                    </Button>
-                  </div>
+                  {video.analysis ? (
+                    <div className="flex gap-1.5 pt-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openModal(video, "analysis")}
+                        className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
+                      >
+                        <Search className="h-3 w-3" />
+                        Analysis
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openModal(video, "concepts")}
+                        className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
+                      >
+                        <Sparkles className="h-3 w-3" />
+                        Concepts
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="pt-1 space-y-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={analyzingIds.has(id)}
+                        onClick={() => analyzeVideo(id)}
+                        className="w-full rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
+                      >
+                        {analyzingIds.has(id) ? (
+                          <>
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            Analyzing...
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 className="h-3 w-3" />
+                            Analyze with AI
+                          </>
+                        )}
+                      </Button>
+                      {analyzeErrors[id] && (
+                        <p className="text-[10px] text-red-400/80 leading-tight">{analyzeErrors[id]}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

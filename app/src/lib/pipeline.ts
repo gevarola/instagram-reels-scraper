@@ -1,14 +1,9 @@
 import { v4 as uuid } from "uuid";
 import { readConfigs, readCreators, readVideos, writeVideos } from "./csv";
 import { scrapeReels } from "./apify";
-import { uploadVideo, analyzeVideo } from "./gemini";
-import { generateNewConcepts } from "./claude";
 import type { PipelineParams, PipelineProgress, Video, ActiveTask } from "./types";
 
-const VIDEO_CONCURRENCY = 3;
-
 interface ScrapedVideo {
-  videoUrl: string;
   postUrl: string;
   views: number;
   likes: number;
@@ -24,7 +19,7 @@ interface ScrapedVideo {
  * links come back with an HTTP status, which this does not retry on). Same
  * 2s/4s/8s backoff already used for Gemini calls in gemini.ts.
  */
-async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
+export async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await fetch(url);
@@ -41,21 +36,6 @@ async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
   throw new Error("unreachable");
 }
 
-async function runWithConcurrency<T>(
-  items: T[],
-  concurrency: number,
-  fn: (item: T) => Promise<void>
-): Promise<void> {
-  let index = 0;
-  const workers = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
-    while (index < items.length) {
-      const i = index++;
-      await fn(items[i]);
-    }
-  });
-  await Promise.all(workers);
-}
-
 export async function runPipeline(
   params: PipelineParams,
   onProgress: (progress: PipelineProgress) => void
@@ -67,8 +47,7 @@ export async function runPipeline(
     creatorsCompleted: 0,
     creatorsTotal: 0,
     creatorsScraped: 0,
-    videosAnalyzed: 0,
-    videosTotal: 0,
+    videosSaved: 0,
     errors: [],
     log: [],
   };
@@ -114,10 +93,12 @@ export async function runPipeline(
     log(`Found ${creators.length} creators — scraping all in parallel`);
     emit();
 
-    // Phase 1: Scrape all creators in parallel
+    // Scrape all creators in parallel. No per-creator cap here — every
+    // reel inside the lookback window gets saved, so the Videos page
+    // reflects everything each account actually posted this month.
     progress.phase = "scraping";
     const cutoffDate = new Date(Date.now() - params.nDays * 24 * 60 * 60 * 1000);
-    const allTopVideos: ScrapedVideo[] = [];
+    const allVideos: ScrapedVideo[] = [];
 
     const scrapeResults = await Promise.allSettled(
       creators.map(async (creator) => {
@@ -130,7 +111,6 @@ export async function runPipeline(
         const videos = reels
           .filter((r) => r.videoUrl && r.timestamp)
           .map((r) => ({
-            videoUrl: r.videoUrl,
             postUrl: r.url,
             views: r.videoPlayCount || 0,
             likes: r.likesCount || 0,
@@ -142,24 +122,20 @@ export async function runPipeline(
           }))
           .filter((v) => v.timestamp >= cutoffDate);
 
-        videos.sort((a, b) => b.views - a.views);
-        const topVideos = videos.slice(0, params.topK);
-
-        updateTask(taskId, `Top ${topVideos.length} selected`);
-        log(`@${creator.username}: ${reels.length} reels → top ${topVideos.length} selected`);
+        log(`@${creator.username}: ${reels.length} reels → ${videos.length} within the last ${params.nDays} days`);
 
         removeTask(taskId);
         progress.creatorsScraped++;
         emit();
 
-        return { creator: creator.username, videos: topVideos };
+        return { creator: creator.username, videos };
       })
     );
 
     for (const result of scrapeResults) {
       if (result.status === "fulfilled") {
         for (const v of result.value.videos) {
-          allTopVideos.push(v);
+          allVideos.push(v);
         }
         progress.creatorsCompleted++;
       } else {
@@ -170,93 +146,43 @@ export async function runPipeline(
       }
     }
 
-    progress.videosTotal = allTopVideos.length;
-    log(`Scraping done. ${allTopVideos.length} videos to analyze (${VIDEO_CONCURRENCY} workers)`);
+    log(`Scraping done. ${allVideos.length} videos found.`);
     emit();
 
-    // Phase 2: Process videos concurrently
-    progress.phase = "analyzing";
-    emit();
+    // Save everything at once — metrics only, no AI analysis yet. Analysis
+    // happens on demand from the Videos page (see /api/videos/analyze),
+    // since running Gemini + Claude on every scraped video up front would
+    // cost money on videos nobody ends up looking at.
+    const existing = readVideos();
+    const existingLinks = new Set(existing.map((v) => v.link));
+    const newVideos: Video[] = allVideos
+      .filter((v) => !existingLinks.has(v.postUrl))
+      .map((video) => ({
+        id: uuid(),
+        link: video.postUrl,
+        thumbnail: video.thumbnail,
+        creator: video.username,
+        views: video.views,
+        likes: video.likes,
+        comments: video.comments,
+        analysis: "",
+        newConcepts: "",
+        datePosted: video.datePosted,
+        dateAdded: new Date().toISOString().slice(0, 10),
+        configName: params.configName,
+        starred: false,
+      }));
 
-    const newVideos: Video[] = [];
-
-    await runWithConcurrency(allTopVideos, VIDEO_CONCURRENCY, async (video) => {
-      const taskId = `video-${uuid().slice(0, 8)}`;
-      const label = `${video.views.toLocaleString()} views`;
-
-      try {
-        addTask({ id: taskId, creator: video.username, step: "Downloading", views: video.views });
-
-        const videoResponse = await fetchWithRetry(video.videoUrl);
-        if (!videoResponse.ok) throw new Error(`Download failed: ${videoResponse.status}`);
-        const videoBuffer = Buffer.from(await videoResponse.arrayBuffer());
-        const contentType = videoResponse.headers.get("content-type") || "video/mp4";
-
-        updateTask(taskId, "Uploading to Gemini");
-        log(`@${video.username} (${label}): uploading to Gemini`);
-
-        const fileData = await uploadVideo(videoBuffer, contentType);
-
-        updateTask(taskId, "Gemini analyzing");
-        log(`@${video.username} (${label}): Gemini analyzing`);
-
-        const analysis = await analyzeVideo(
-          fileData.uri,
-          fileData.mimeType,
-          config.analysisInstruction,
-          undefined,
-          (fromModel, toModel) =>
-            log(`@${video.username} (${label}): ${fromModel} hit its daily quota, switching to ${toModel}`)
-        );
-
-        let newConcepts = "";
-        if (process.env.ANTHROPIC_API_KEY) {
-          updateTask(taskId, "Claude generating concepts");
-          log(`@${video.username} (${label}): Claude generating concepts`);
-          newConcepts = await generateNewConcepts(analysis, config.newConceptsInstruction);
-        } else {
-          log(`@${video.username} (${label}): no ANTHROPIC_API_KEY set, skipping concept generation`);
-        }
-
-        const videoRecord: Video = {
-          id: uuid(),
-          link: video.postUrl,
-          thumbnail: video.thumbnail,
-          creator: video.username,
-          views: video.views,
-          likes: video.likes,
-          comments: video.comments,
-          analysis,
-          newConcepts,
-          datePosted: video.datePosted,
-          dateAdded: new Date().toISOString().slice(0, 10),
-          configName: params.configName,
-          starred: false,
-        };
-
-        newVideos.push(videoRecord);
-        progress.videosAnalyzed++;
-        removeTask(taskId);
-        log(`@${video.username} (${label}): done`);
-        emit();
-      } catch (err) {
-        removeTask(taskId);
-        const msg = `@${video.username} (${label}): ${err instanceof Error ? err.message : err}`;
-        progress.errors.push(msg);
-        log(`Error — ${msg}`);
-        emit();
-      }
-    });
-
-    // Write all new videos at once
     if (newVideos.length > 0) {
-      const existing = readVideos();
       writeVideos([...existing, ...newVideos]);
     }
+    progress.videosSaved = newVideos.length;
+    const skipped = allVideos.length - newVideos.length;
+    if (skipped > 0) log(`Skipped ${skipped} already-saved videos (seen in a previous run).`);
 
     progress.phase = "done";
     progress.status = "completed";
-    log(`Pipeline complete! ${progress.videosAnalyzed}/${progress.videosTotal} videos analyzed, ${progress.errors.length} errors.`);
+    log(`Pipeline complete! ${progress.videosSaved} new videos saved, ${progress.errors.length} errors.`);
     emit();
   } catch (err) {
     progress.status = "error";
