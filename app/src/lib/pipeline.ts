@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { readConfigs, readCreators, readVideos, writeVideos } from "./csv";
+import { readConfigs, readCreators, insertNewVideos } from "./db";
 import { scrapeReels } from "./apify";
 import type { PipelineParams, PipelineProgress, Video, ActiveTask } from "./types";
 
@@ -78,14 +78,14 @@ export async function runPipeline(
 
   try {
     // Load config
-    const configs = readConfigs();
+    const configs = await readConfigs();
     const config = configs.find((c) => c.configName === params.configName);
     if (!config) throw new Error(`Config "${params.configName}" not found`);
 
     log(`Loaded config: ${config.configName}`);
 
     // Load creators
-    const allCreators = readCreators();
+    const allCreators = await readCreators();
     const creators = allCreators.filter((c) => c.category === config.creatorsCategory);
     if (creators.length === 0) throw new Error(`No creators found for category "${config.creatorsCategory}"`);
 
@@ -153,31 +153,24 @@ export async function runPipeline(
     // happens on demand from the Videos page (see /api/videos/analyze),
     // since running Gemini + Claude on every scraped video up front would
     // cost money on videos nobody ends up looking at.
-    const existing = readVideos();
-    const existingLinks = new Set(existing.map((v) => v.link));
-    const newVideos: Video[] = allVideos
-      .filter((v) => !existingLinks.has(v.postUrl))
-      .map((video) => ({
-        id: uuid(),
-        link: video.postUrl,
-        thumbnail: video.thumbnail,
-        creator: video.username,
-        views: video.views,
-        likes: video.likes,
-        comments: video.comments,
-        analysis: "",
-        newConcepts: "",
-        datePosted: video.datePosted,
-        dateAdded: new Date().toISOString().slice(0, 10),
-        configName: params.configName,
-        starred: false,
-      }));
+    const candidates: Video[] = allVideos.map((video) => ({
+      id: uuid(),
+      link: video.postUrl,
+      thumbnail: video.thumbnail,
+      creator: video.username,
+      views: video.views,
+      likes: video.likes,
+      comments: video.comments,
+      analysis: "",
+      newConcepts: "",
+      datePosted: video.datePosted,
+      dateAdded: new Date().toISOString().slice(0, 10),
+      configName: params.configName,
+      starred: false,
+    }));
 
-    if (newVideos.length > 0) {
-      writeVideos([...existing, ...newVideos]);
-    }
-    progress.videosSaved = newVideos.length;
-    const skipped = allVideos.length - newVideos.length;
+    progress.videosSaved = candidates.length > 0 ? await insertNewVideos(candidates) : 0;
+    const skipped = candidates.length - progress.videosSaved;
     if (skipped > 0) log(`Skipped ${skipped} already-saved videos (seen in a previous run).`);
 
     progress.phase = "done";
