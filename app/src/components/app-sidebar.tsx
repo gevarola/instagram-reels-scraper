@@ -22,7 +22,7 @@ const navItems = [
   { title: "Run Pipeline", href: "/run", icon: Play },
   { title: "Creators", href: "/creators", icon: Users },
   { title: "Discover", href: "/discover", icon: Search },
-  { title: "Configs", href: "/configs", icon: Settings2 },
+  { title: "Configuraciones", href: "/configs", icon: Settings2 },
 ];
 
 export function AppSidebar() {

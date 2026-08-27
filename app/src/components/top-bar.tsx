@@ -7,7 +7,7 @@ const pageTitles: Record<string, string> = {
   "/videos": "Videos",
   "/run": "Run Pipeline",
   "/creators": "Creators",
-  "/configs": "Configs",
+  "/configs": "Configuraciones",
 };
 
 export function TopBar() {
