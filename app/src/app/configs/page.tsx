@@ -86,14 +86,14 @@ export default function ConfigsPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Configs</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">Configs</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage pipeline configurations and AI prompts
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openNew} className="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 border-0 gap-1.5">
+            <Button onClick={openNew} className="rounded-xl bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0 gap-1.5">
               <Plus className="h-4 w-4" />
               New Config
             </Button>
@@ -123,7 +123,7 @@ export default function ConfigsPage() {
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                  <Search className="h-3 w-3 text-purple-400" />
+                  <Search className="h-3 w-3 text-amber-500" />
                   Analysis Instruction (Gemini prompt)
                 </Label>
                 <Textarea
@@ -136,7 +136,7 @@ export default function ConfigsPage() {
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                  <Sparkles className="h-3 w-3 text-indigo-400" />
+                  <Sparkles className="h-3 w-3 text-sky-500" />
                   New Concepts Instruction (Claude prompt)
                 </Label>
                 <Textarea
@@ -149,7 +149,7 @@ export default function ConfigsPage() {
               </div>
               <Button
                 onClick={handleSave}
-                className="w-full rounded-xl h-11 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 border-0"
+                className="w-full rounded-xl h-11 bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0"
               >
                 {editing ? "Save Changes" : "Create Config"}
               </Button>
@@ -168,8 +168,8 @@ export default function ConfigsPage() {
             <div key={config.id} className="glass rounded-2xl p-5 transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.1]">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border border-purple-500/20">
-                    <Settings2 className="h-4 w-4 text-purple-400" />
+                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-red-500/20 border border-amber-500/20">
+                    <Settings2 className="h-4 w-4 text-amber-500" />
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold">{config.configName}</h3>
@@ -177,11 +177,11 @@ export default function ConfigsPage() {
                       <Badge variant="secondary" className="rounded-md text-[10px] bg-white/[0.05] border border-white/[0.06]">
                         {config.creatorsCategory}
                       </Badge>
-                      <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <span className="num-display inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Users className="h-3 w-3" />
                         {creatorCount}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <span className="num-display inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Film className="h-3 w-3" />
                         {videoCount}
                       </span>
@@ -209,13 +209,13 @@ export default function ConfigsPage() {
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-xl bg-black/20 border border-white/[0.04] p-3">
-                  <p className="text-[10px] font-medium text-purple-400 uppercase tracking-wider mb-1.5">Analysis Prompt</p>
+                  <p className="text-[10px] font-medium text-amber-500 uppercase tracking-wider mb-1.5">Analysis Prompt</p>
                   <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                     {config.analysisInstruction}
                   </p>
                 </div>
                 <div className="rounded-xl bg-black/20 border border-white/[0.04] p-3">
-                  <p className="text-[10px] font-medium text-indigo-400 uppercase tracking-wider mb-1.5">Concepts Prompt</p>
+                  <p className="text-[10px] font-medium text-sky-500 uppercase tracking-wider mb-1.5">Concepts Prompt</p>
                   <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                     {config.newConceptsInstruction}
                   </p>

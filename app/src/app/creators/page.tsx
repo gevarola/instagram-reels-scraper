@@ -166,7 +166,7 @@ export default function CreatorsPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Creators</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">Creators</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage competitor Instagram accounts to track
           </p>
@@ -183,7 +183,7 @@ export default function CreatorsPage() {
           </Button>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={openNew} className="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 border-0 gap-1.5">
+              <Button onClick={openNew} className="rounded-xl bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0 gap-1.5">
                 <Plus className="h-4 w-4" />
                 Add Creator
               </Button>
@@ -219,7 +219,7 @@ export default function CreatorsPage() {
                 <Button
                   onClick={handleSave}
                   disabled={saving || !form.username || !form.category}
-                  className="w-full rounded-xl h-11 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 border-0"
+                  className="w-full rounded-xl h-11 bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0"
                 >
                   {saving ? (
                     <>
@@ -272,7 +272,7 @@ export default function CreatorsPage() {
                   className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                 >
                   {/* Profile pic */}
-                  <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/[0.1]">
+                  <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-white/[0.1]">
                     {creator.profilePicUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -287,7 +287,7 @@ export default function CreatorsPage() {
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold hover:text-purple-400 transition-colors">@{creator.username}</p>
+                    <p className="text-sm font-semibold hover:text-amber-500 transition-colors">@{creator.username}</p>
                     <Badge variant="secondary" className="mt-0.5 rounded-md text-[10px] bg-white/[0.05] border border-white/[0.06]">
                       {creator.category}
                     </Badge>
@@ -326,18 +326,18 @@ export default function CreatorsPage() {
               {(creator.followers > 0 || creator.lastScrapedAt) ? (
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <div className="rounded-xl bg-black/20 border border-white/[0.04] p-2.5 text-center">
-                    <UserCheck className="mx-auto h-3.5 w-3.5 text-blue-400 mb-1" />
-                    <p className="text-sm font-bold">{formatNumber(creator.followers)}</p>
+                    <UserCheck className="mx-auto h-3.5 w-3.5 text-sky-500 mb-1" />
+                    <p className="num-display text-xl">{formatNumber(creator.followers)}</p>
                     <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Followers</p>
                   </div>
                   <div className="rounded-xl bg-black/20 border border-white/[0.04] p-2.5 text-center">
-                    <Film className="mx-auto h-3.5 w-3.5 text-purple-400 mb-1" />
-                    <p className="text-sm font-bold">{creator.reelsCount30d}</p>
+                    <Film className="mx-auto h-3.5 w-3.5 text-amber-500 mb-1" />
+                    <p className="num-display text-xl">{creator.reelsCount30d}</p>
                     <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Reels/30d</p>
                   </div>
                   <div className="rounded-xl bg-black/20 border border-white/[0.04] p-2.5 text-center">
-                    <Eye className="mx-auto h-3.5 w-3.5 text-emerald-400 mb-1" />
-                    <p className="text-sm font-bold">{formatNumber(creator.avgViews30d)}</p>
+                    <Eye className="mx-auto h-3.5 w-3.5 text-emerald-500 mb-1" />
+                    <p className="num-display text-xl">{formatNumber(creator.avgViews30d)}</p>
                     <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Avg Views</p>
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export default function CreatorsPage() {
                 ) : <span />}
                 <Link
                   href={`/videos?creator=${creator.username}`}
-                  className="inline-flex items-center gap-1 text-[11px] text-purple-400 hover:text-purple-300 transition-colors"
+                  className="inline-flex items-center gap-1 text-[11px] text-amber-500 hover:text-amber-400 transition-colors"
                 >
                   View videos <ExternalLink className="h-3 w-3" />
                 </Link>

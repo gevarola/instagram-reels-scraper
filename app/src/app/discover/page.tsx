@@ -38,9 +38,9 @@ function ProfileCard({
   added: boolean;
 }) {
   return (
-    <div className={`glass rounded-2xl p-4 space-y-2.5 transition-all duration-200 ${selected ? "border-purple-400/40 bg-purple-500/[0.04]" : ""}`}>
+    <div className={`glass rounded-2xl p-4 space-y-2.5 transition-all duration-200 ${selected ? "border-amber-400/40 bg-amber-500/[0.04]" : ""}`}>
       <div className="flex items-start gap-3">
-        <div className="relative h-11 w-11 shrink-0 rounded-full overflow-hidden bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/[0.1]">
+        <div className="relative h-11 w-11 shrink-0 rounded-full overflow-hidden bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-white/[0.1]">
           {profile.profilePicUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -58,7 +58,7 @@ function ProfileCard({
           <p className="text-sm font-semibold truncate">@{profile.username}</p>
           <p className="text-xs text-muted-foreground truncate">{profile.fullName || " "}</p>
         </div>
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">
+        <span className="num-display shrink-0 text-sm text-muted-foreground">
           {formatFollowers(profile.followers)}
         </span>
       </div>
@@ -86,7 +86,7 @@ function ProfileCard({
             variant="ghost"
             size="sm"
             onClick={onToggleSelect}
-            className={`flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] ${selected ? "text-purple-300" : "text-muted-foreground hover:text-foreground"}`}
+            className={`flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] ${selected ? "text-amber-600" : "text-muted-foreground hover:text-foreground"}`}
           >
             {selected ? <Check className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
             {selected ? "Selected as seed" : "Use as seed"}
@@ -194,7 +194,7 @@ export default function DiscoverPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Discover Creators</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Discover Creators</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Step 1: search a niche by keyword. Step 2: pick promising accounts and expand into their &quot;Suggested for You&quot; network.
         </p>
@@ -203,7 +203,7 @@ export default function DiscoverPage() {
       {/* Step 1 — Keyword search */}
       <div className="glass rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/15 text-xs font-bold text-purple-300">1</div>
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-xs font-bold text-amber-600">1</div>
           <h2 className="text-sm font-semibold">Search a niche</h2>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -255,7 +255,7 @@ export default function DiscoverPage() {
       {/* Step 2 — Expand via related profiles */}
       <div className="glass rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/15 text-xs font-bold text-purple-300">2</div>
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-xs font-bold text-amber-600">2</div>
           <h2 className="text-sm font-semibold">Expand from selected accounts</h2>
           <span className="text-xs text-muted-foreground">({selectedSeeds.size}/5 selected as seeds)</span>
         </div>

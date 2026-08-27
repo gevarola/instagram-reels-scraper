@@ -55,7 +55,7 @@ export default function ContentIdeasPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Content Ideas</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Content Ideas</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Concepts mined from your pipeline runs, built with the hooks + storytelling + content-system frameworks
         </p>
@@ -85,8 +85,8 @@ export default function ContentIdeasPage() {
         {filtered.map((idea) => (
           <div key={idea.id} className="glass rounded-2xl overflow-hidden transition-all duration-300 hover:border-white/[0.12] p-4 space-y-3">
             <div className="flex items-start justify-between gap-2">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20">
-                <Lightbulb className="h-4 w-4 text-purple-400" />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-red-500/20">
+                <Lightbulb className="h-4 w-4 text-amber-500" />
               </div>
               <button
                 onClick={() => toggleStar(idea.id, idea.starred)}
@@ -104,7 +104,7 @@ export default function ContentIdeasPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5">
-              <Badge variant="secondary" className="rounded-md text-[10px] bg-purple-500/10 border border-purple-500/20 text-purple-300">
+              <Badge variant="secondary" className="rounded-md text-[10px] bg-amber-500/10 border border-amber-500/20 text-amber-600">
                 {idea.archetype}
               </Badge>
             </div>
@@ -173,7 +173,7 @@ export default function ContentIdeasPage() {
                   onClick={() => setModalSection("hook")}
                   className={`px-3 py-2.5 text-xs font-medium border-b-2 transition-colors ${
                     modalSection === "hook"
-                      ? "border-purple-400 text-foreground"
+                      ? "border-amber-500 text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -183,7 +183,7 @@ export default function ContentIdeasPage() {
                   onClick={() => setModalSection("script")}
                   className={`px-3 py-2.5 text-xs font-medium border-b-2 transition-colors ${
                     modalSection === "script"
-                      ? "border-purple-400 text-foreground"
+                      ? "border-amber-500 text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >

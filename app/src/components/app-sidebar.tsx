@@ -44,11 +44,11 @@ export function AppSidebar() {
     <Sidebar className="border-r border-white/[0.06]">
       <SidebarHeader className="px-5 py-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 glow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-red-600 glow-sm">
             <Film className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold tracking-tight">Virality System</h1>
+            <h1 className="font-display text-base font-semibold tracking-tight">Virality System</h1>
             <p className="text-[11px] text-muted-foreground">Instagram Reels AI</p>
           </div>
         </div>

@@ -121,7 +121,7 @@ function VideosContent() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Videos</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Videos</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Browse analyzed competitor reels with AI insights
         </p>
@@ -202,7 +202,7 @@ function VideosContent() {
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent pt-8 pb-2.5 px-3">
                     <div className="flex items-center gap-1.5">
                       <Play className="h-4 w-4 text-white fill-white" />
-                      <span className="text-[15px] font-bold text-white">
+                      <span className="num-display text-[19px] text-white">
                         {formatViews(video.views)}
                       </span>
                     </div>
@@ -223,7 +223,7 @@ function VideosContent() {
                     </button>
                   </div>
 
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                  <div className="num-display flex items-center gap-3 text-[11px] text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <Heart className="h-3 w-3" />
                       {formatViews(video.likes)}
@@ -336,12 +336,12 @@ function VideosContent() {
                       href={modalVideo.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-purple-400 transition-colors"
+                      className="text-muted-foreground hover:text-amber-500 transition-colors"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   </div>
-                  <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                  <div className="num-display mt-1 flex items-center gap-3 text-[13px] text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <Play className="h-3 w-3 fill-current" />
                       {formatViews(modalVideo.views)}
@@ -364,7 +364,7 @@ function VideosContent() {
                     onClick={() => setModalSection("analysis")}
                     className={`rounded-xl text-xs h-8 gap-1.5 transition-all duration-200 ${
                       modalSection === "analysis"
-                        ? "bg-purple-500/15 text-purple-300 border border-purple-500/20"
+                        ? "bg-amber-500/15 text-amber-600 border border-amber-500/20"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -377,7 +377,7 @@ function VideosContent() {
                     onClick={() => setModalSection("concepts")}
                     className={`rounded-xl text-xs h-8 gap-1.5 transition-all duration-200 ${
                       modalSection === "concepts"
-                        ? "bg-indigo-500/15 text-indigo-300 border border-indigo-500/20"
+                        ? "bg-sky-500/15 text-sky-600 border border-sky-500/20"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >

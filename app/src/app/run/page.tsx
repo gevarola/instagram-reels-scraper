@@ -54,7 +54,7 @@ export default function RunPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Run Pipeline</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Run Pipeline</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Scrape competitor reels and save their metrics — AI analysis runs per-video from the Videos page
         </p>
@@ -63,7 +63,7 @@ export default function RunPage() {
       {/* Config Form */}
       <div className="glass rounded-2xl p-6 space-y-6">
         <div className="flex items-center gap-2">
-          <Zap className="h-4 w-4 text-purple-400" />
+          <Zap className="h-4 w-4 text-amber-500" />
           <h2 className="text-sm font-semibold">Pipeline Configuration</h2>
         </div>
 
@@ -121,7 +121,7 @@ export default function RunPage() {
             onClick={handleRun}
             disabled={running || !selectedConfig}
             size="lg"
-            className="w-full rounded-xl h-12 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 border-0 glow-sm transition-all duration-300 hover:glow text-sm font-semibold"
+            className="w-full rounded-xl h-12 bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0 glow-sm transition-all duration-300 hover:glow text-sm font-semibold"
           >
             {running ? (
               <>
@@ -145,7 +145,7 @@ export default function RunPage() {
           <div className="glass rounded-2xl p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {progress.status === "running" && <Loader2 className="h-4 w-4 text-purple-400 animate-spin" />}
+                {progress.status === "running" && <Loader2 className="h-4 w-4 text-amber-500 animate-spin" />}
                 {progress.status === "completed" && <CheckCircle2 className="h-4 w-4 text-emerald-400" />}
                 {progress.status === "error" && <XCircle className="h-4 w-4 text-red-400" />}
                 <h2 className="text-sm font-semibold">
@@ -154,7 +154,7 @@ export default function RunPage() {
                   {progress.status === "error" && "Pipeline failed"}
                 </h2>
               </div>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="num-display flex items-center gap-3 text-xs text-muted-foreground">
                 <span>Creators: <span className="text-foreground">{progress.creatorsScraped}/{progress.creatorsTotal}</span></span>
                 {progress.phase === "done" && (
                   <span>Videos saved: <span className="text-foreground">{progress.videosSaved}</span></span>
@@ -177,7 +177,7 @@ export default function RunPage() {
                       ? "bg-gradient-to-r from-emerald-500 to-teal-500"
                       : progress.status === "error"
                       ? "bg-gradient-to-r from-red-500 to-orange-500"
-                      : "bg-gradient-to-r from-purple-500 to-indigo-500"
+                      : "bg-gradient-to-r from-amber-500 to-red-500"
                   }`}
                   style={{ width: `${progress.status === "completed" ? 100 : totalProgress}%` }}
                 />
@@ -192,7 +192,7 @@ export default function RunPage() {
                     key={task.id}
                     className="flex items-center gap-3 rounded-xl bg-white/[0.03] border border-white/[0.04] px-3 py-2"
                   >
-                    <Loader2 className="h-3 w-3 text-purple-400 animate-spin shrink-0" />
+                    <Loader2 className="h-3 w-3 text-amber-500 animate-spin shrink-0" />
                     <span className="text-xs font-medium text-foreground/80">@{task.creator}</span>
                     <span className="text-[11px] text-muted-foreground">{task.step}</span>
                     {task.views && (
