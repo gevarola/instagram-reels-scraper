@@ -16,9 +16,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Lightbulb, Star, Mic, FileText, X } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 import type { ContentIdea } from "@/lib/types";
 
 export default function ContentIdeasPage() {
+  const { t } = useLanguage();
   const [ideas, setIdeas] = useState<ContentIdea[]>([]);
   const [filterArchetype, setFilterArchetype] = useState<string>("all");
   const [modalIdea, setModalIdea] = useState<ContentIdea | null>(null);
@@ -55,9 +57,9 @@ export default function ContentIdeasPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight">Content Ideas</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{t("contentIdeas.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Concepts mined from your pipeline runs, built with the hooks + storytelling + content-system frameworks
+          {t("contentIdeas.subtitle")}
         </p>
       </div>
 
@@ -65,10 +67,10 @@ export default function ContentIdeasPage() {
       <div className="flex flex-wrap items-center gap-3">
         <Select value={filterArchetype} onValueChange={setFilterArchetype}>
           <SelectTrigger className="w-[220px] rounded-xl glass border-white/[0.08] h-10">
-            <SelectValue placeholder="Filter by archetype" />
+            <SelectValue placeholder={t("contentIdeas.filterArchetype")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Archetypes</SelectItem>
+            <SelectItem value="all">{t("contentIdeas.allArchetypes")}</SelectItem>
             {uniqueArchetypes.map((a) => (
               <SelectItem key={a} value={a}>{a}</SelectItem>
             ))}
@@ -76,7 +78,7 @@ export default function ContentIdeasPage() {
         </Select>
 
         <Badge variant="secondary" className="rounded-lg px-3 py-1.5 text-xs bg-white/[0.05] border border-white/[0.08]">
-          {filtered.length} ideas
+          {t("contentIdeas.count", { n: filtered.length })}
         </Badge>
       </div>
 
@@ -110,7 +112,7 @@ export default function ContentIdeasPage() {
             </div>
 
             <p className="text-[10px] text-muted-foreground truncate">
-              Inspired by {idea.sourceInspiration}
+              {t("contentIdeas.inspiredBy", { source: idea.sourceInspiration })}
             </p>
 
             <div className="flex gap-1.5 pt-1">
@@ -121,7 +123,7 @@ export default function ContentIdeasPage() {
                 className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
               >
                 <Mic className="h-3 w-3" />
-                Hook
+                {t("contentIdeas.hook")}
               </Button>
               <Button
                 variant="ghost"
@@ -130,7 +132,7 @@ export default function ContentIdeasPage() {
                 className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
               >
                 <FileText className="h-3 w-3" />
-                Script
+                {t("contentIdeas.script")}
               </Button>
             </div>
           </div>
@@ -140,9 +142,9 @@ export default function ContentIdeasPage() {
       {filtered.length === 0 && (
         <div className="glass rounded-2xl p-12 text-center">
           <Lightbulb className="mx-auto h-10 w-10 text-muted-foreground/30" />
-          <h3 className="mt-4 font-semibold">No content ideas yet</h3>
+          <h3 className="mt-4 font-semibold">{t("contentIdeas.emptyTitle")}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Run the pipeline first, then generate a fresh batch of ideas from the results.
+            {t("contentIdeas.emptySubtitle")}
           </p>
         </div>
       )}
@@ -151,7 +153,7 @@ export default function ContentIdeasPage() {
       <Dialog open={!!modalIdea} onOpenChange={(open) => { if (!open) setModalIdea(null); }}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden glass-strong rounded-2xl border-white/[0.08] p-0 gap-0">
           <DialogTitle className="sr-only">
-            {modalSection === "hook" ? "Hook" : "Script"}
+            {modalSection === "hook" ? t("contentIdeas.hook") : t("contentIdeas.script")}
           </DialogTitle>
           {modalIdea && (
             <>
@@ -177,7 +179,7 @@ export default function ContentIdeasPage() {
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Hook
+                  {t("contentIdeas.hook")}
                 </button>
                 <button
                   onClick={() => setModalSection("script")}
@@ -187,7 +189,7 @@ export default function ContentIdeasPage() {
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Script
+                  {t("contentIdeas.script")}
                 </button>
               </div>
 

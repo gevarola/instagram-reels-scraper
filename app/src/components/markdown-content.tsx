@@ -3,6 +3,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
+import { useLanguage } from "@/lib/i18n";
 
 const components: Components = {
   h1: ({ children }) => (
@@ -74,9 +75,10 @@ interface MarkdownContentProps {
 }
 
 export function MarkdownContent({ content, variant = "analysis" }: MarkdownContentProps) {
+  const { t } = useLanguage();
   if (!content) {
     return (
-      <p className="text-sm text-muted-foreground italic">No content available.</p>
+      <p className="text-sm text-muted-foreground italic">{t("markdown.noContent")}</p>
     );
   }
 

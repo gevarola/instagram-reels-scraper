@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Heart, MessageCircle, Film, Sparkles, Search, Star, Play, ArrowUpDown, X, ExternalLink, Wand2, Loader2 } from "lucide-react";
 import { MarkdownContent } from "@/components/markdown-content";
+import { useLanguage } from "@/lib/i18n";
 import type { Video, Config } from "@/lib/types";
 
 function formatViews(n: number): string {
@@ -37,6 +38,7 @@ export default function VideosPage() {
 }
 
 function VideosContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [videos, setVideos] = useState<Video[]>([]);
   const [configs, setConfigs] = useState<Config[]>([]);
@@ -92,10 +94,10 @@ function VideosContent() {
         body: JSON.stringify({ id }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Analysis failed");
+      if (!res.ok) throw new Error(data.error || t("videos.analysisFailed"));
       setVideos((prev) => prev.map((v) => (v.id === id ? data : v)));
     } catch (err) {
-      setAnalyzeErrors((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : "Analysis failed" }));
+      setAnalyzeErrors((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : t("videos.analysisFailed") }));
     } finally {
       setAnalyzingIds((prev) => {
         const next = new Set(prev);
@@ -121,9 +123,9 @@ function VideosContent() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight">Videos</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{t("videos.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Browse analyzed competitor reels with AI insights
+          {t("videos.subtitle")}
         </p>
       </div>
 
@@ -131,10 +133,10 @@ function VideosContent() {
       <div className="flex flex-wrap items-center gap-3">
         <Select value={filterConfig} onValueChange={setFilterConfig}>
           <SelectTrigger className="w-[220px] rounded-xl glass border-white/[0.08] h-10">
-            <SelectValue placeholder="Filter by config" />
+            <SelectValue placeholder={t("videos.filterConfig")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Configs</SelectItem>
+            <SelectItem value="all">{t("videos.allConfigs")}</SelectItem>
             {configs.map((c) => (
               <SelectItem key={c.id} value={c.configName}>{c.configName}</SelectItem>
             ))}
@@ -143,10 +145,10 @@ function VideosContent() {
 
         <Select value={filterCreator} onValueChange={setFilterCreator}>
           <SelectTrigger className="w-[200px] rounded-xl glass border-white/[0.08] h-10">
-            <SelectValue placeholder="Filter by creator" />
+            <SelectValue placeholder={t("videos.filterCreator")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Creators</SelectItem>
+            <SelectItem value="all">{t("videos.allCreators")}</SelectItem>
             {uniqueCreators.map((c) => (
               <SelectItem key={c} value={c}>@{c}</SelectItem>
             ))}
@@ -159,15 +161,15 @@ function VideosContent() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="views">Most Views</SelectItem>
-            <SelectItem value="date-posted">Date Posted</SelectItem>
-            <SelectItem value="date-added">Date Added</SelectItem>
-            <SelectItem value="starred">Starred First</SelectItem>
+            <SelectItem value="views">{t("videos.sortViews")}</SelectItem>
+            <SelectItem value="date-posted">{t("videos.sortDatePosted")}</SelectItem>
+            <SelectItem value="date-added">{t("videos.sortDateAdded")}</SelectItem>
+            <SelectItem value="starred">{t("videos.sortStarred")}</SelectItem>
           </SelectContent>
         </Select>
 
         <Badge variant="secondary" className="rounded-lg px-3 py-1.5 text-xs bg-white/[0.05] border border-white/[0.08]">
-          {filtered.length} videos
+          {t("videos.count", { n: filtered.length })}
         </Badge>
       </div>
 
@@ -249,7 +251,7 @@ function VideosContent() {
                         className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
                       >
                         <Search className="h-3 w-3" />
-                        Analysis
+                        {t("videos.analysis")}
                       </Button>
                       <Button
                         variant="ghost"
@@ -258,7 +260,7 @@ function VideosContent() {
                         className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground"
                       >
                         <Sparkles className="h-3 w-3" />
-                        Concepts
+                        {t("videos.concepts")}
                       </Button>
                     </div>
                   ) : (
@@ -273,12 +275,12 @@ function VideosContent() {
                         {analyzingIds.has(id) ? (
                           <>
                             <Loader2 className="h-3 w-3 animate-spin" />
-                            Analyzing...
+                            {t("videos.analyzing")}
                           </>
                         ) : (
                           <>
                             <Wand2 className="h-3 w-3" />
-                            Analyze with AI
+                            {t("videos.analyzeWithAI")}
                           </>
                         )}
                       </Button>
@@ -297,9 +299,9 @@ function VideosContent() {
       {filtered.length === 0 && (
         <div className="glass rounded-2xl p-12 text-center">
           <Film className="mx-auto h-10 w-10 text-muted-foreground/30" />
-          <h3 className="mt-4 font-semibold">No videos found</h3>
+          <h3 className="mt-4 font-semibold">{t("videos.emptyTitle")}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Run a pipeline analysis to generate results, or adjust your filters.
+            {t("videos.emptySubtitle")}
           </p>
         </div>
       )}
@@ -308,7 +310,7 @@ function VideosContent() {
       <Dialog open={!!modalVideo} onOpenChange={(open) => { if (!open) setModalVideo(null); }}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden glass-strong rounded-2xl border-white/[0.08] p-0 gap-0">
           <DialogTitle className="sr-only">
-            {modalSection === "analysis" ? "Video Analysis" : "New Concepts"}
+            {modalSection === "analysis" ? t("videos.modalTitleAnalysis") : t("videos.modalTitleConcepts")}
           </DialogTitle>
           {modalVideo && (
             <>
@@ -369,7 +371,7 @@ function VideosContent() {
                     }`}
                   >
                     <Search className="h-3 w-3" />
-                    Analysis
+                    {t("videos.analysis")}
                   </Button>
                   <Button
                     variant="ghost"
@@ -382,7 +384,7 @@ function VideosContent() {
                     }`}
                   >
                     <Sparkles className="h-3 w-3" />
-                    Concepts
+                    {t("videos.concepts")}
                   </Button>
                 </div>
               </div>

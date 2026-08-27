@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Play, Loader2, CheckCircle2, XCircle, Terminal, Zap, ChevronDown, ArrowRight, Film, AlertTriangle } from "lucide-react";
 import { usePipeline } from "@/context/pipeline-context";
+import { useLanguage } from "@/lib/i18n";
 import type { Config } from "@/lib/types";
 
 function formatViews(n: number): string {
@@ -25,6 +26,7 @@ function formatViews(n: number): string {
 }
 
 export default function RunPage() {
+  const { t } = useLanguage();
   const [configs, setConfigs] = useState<Config[]>([]);
   const [selectedConfig, setSelectedConfig] = useState("");
   const [maxVideos, setMaxVideos] = useState(20);
@@ -54,9 +56,9 @@ export default function RunPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight">Run Pipeline</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{t("run.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Scrape competitor reels and save their metrics — AI analysis runs per-video from the Videos page
+          {t("run.subtitle")}
         </p>
       </div>
 
@@ -64,15 +66,15 @@ export default function RunPage() {
       <div className="glass rounded-2xl p-6 space-y-6">
         <div className="flex items-center gap-2">
           <Zap className="h-4 w-4 text-amber-500" />
-          <h2 className="text-sm font-semibold">Pipeline Configuration</h2>
+          <h2 className="text-sm font-semibold">{t("run.pipelineConfiguration")}</h2>
         </div>
 
         <div className="space-y-4">
           <div>
-            <Label className="text-xs text-muted-foreground">Config</Label>
+            <Label className="text-xs text-muted-foreground">{t("run.config")}</Label>
             <Select value={selectedConfig} onValueChange={setSelectedConfig}>
               <SelectTrigger className="mt-1.5 rounded-xl glass border-white/[0.08] h-11">
-                <SelectValue placeholder="Select a config..." />
+                <SelectValue placeholder={t("run.selectConfig")} />
               </SelectTrigger>
               <SelectContent>
                 {configs.map((c) => (
@@ -87,13 +89,13 @@ export default function RunPage() {
             className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`} />
-            Advanced settings
+            {t("run.advancedSettings")}
           </button>
 
           {showAdvanced && (
             <div className="grid gap-4 md:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <div>
-                <Label className="text-xs text-muted-foreground">Max Videos per Creator</Label>
+                <Label className="text-xs text-muted-foreground">{t("run.maxVideosPerCreator")}</Label>
                 <Input
                   type="number"
                   value={maxVideos}
@@ -104,7 +106,7 @@ export default function RunPage() {
                 />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Days Lookback</Label>
+                <Label className="text-xs text-muted-foreground">{t("run.daysLookback")}</Label>
                 <Input
                   type="number"
                   value={nDays}
@@ -126,12 +128,12 @@ export default function RunPage() {
             {running ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Running Pipeline...
+                {t("run.runningPipeline")}
               </>
             ) : (
               <>
                 <Play className="h-4 w-4" />
-                Run Pipeline
+                {t("run.runPipeline")}
               </>
             )}
           </Button>
@@ -149,15 +151,15 @@ export default function RunPage() {
                 {progress.status === "completed" && <CheckCircle2 className="h-4 w-4 text-emerald-400" />}
                 {progress.status === "error" && <XCircle className="h-4 w-4 text-red-400" />}
                 <h2 className="text-sm font-semibold">
-                  {progress.status === "running" && "Scraping creators..."}
-                  {progress.status === "completed" && "Pipeline complete"}
-                  {progress.status === "error" && "Pipeline failed"}
+                  {progress.status === "running" && t("run.scrapingCreators")}
+                  {progress.status === "completed" && t("run.pipelineComplete")}
+                  {progress.status === "error" && t("run.pipelineFailed")}
                 </h2>
               </div>
               <div className="num-display flex items-center gap-3 text-xs text-muted-foreground">
-                <span>Creators: <span className="text-foreground">{progress.creatorsScraped}/{progress.creatorsTotal}</span></span>
+                <span>{t("run.creatorsLabel")} <span className="text-foreground">{progress.creatorsScraped}/{progress.creatorsTotal}</span></span>
                 {progress.phase === "done" && (
-                  <span>Videos saved: <span className="text-foreground">{progress.videosSaved}</span></span>
+                  <span>{t("run.videosSaved")} <span className="text-foreground">{progress.videosSaved}</span></span>
                 )}
                 {progress.errors.length > 0 && (
                   <span className="inline-flex items-center gap-1 text-red-400">
@@ -197,7 +199,7 @@ export default function RunPage() {
                     <span className="text-[11px] text-muted-foreground">{task.step}</span>
                     {task.views && (
                       <span className="ml-auto text-[11px] text-muted-foreground/60">
-                        {formatViews(task.views)} views
+                        {formatViews(task.views)} {t("run.viewsSuffix")}
                       </span>
                     )}
                   </div>
@@ -210,7 +212,7 @@ export default function RunPage() {
               <Button asChild className="w-full rounded-xl h-11 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 border-0 font-semibold gap-2">
                 <Link href="/videos">
                   <Film className="h-4 w-4" />
-                  View {progress.videosSaved} New Videos
+                  {t("run.viewNewVideos", { n: progress.videosSaved })}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -219,7 +221,7 @@ export default function RunPage() {
             {/* Errors summary */}
             {progress.errors.length > 0 && (
               <div className="rounded-xl bg-red-500/5 border border-red-500/10 p-3 space-y-1">
-                <p className="text-[11px] font-medium text-red-400">Errors ({progress.errors.length})</p>
+                <p className="text-[11px] font-medium text-red-400">{t("run.errorsLabel", { n: progress.errors.length })}</p>
                 {progress.errors.map((err, i) => (
                   <p key={i} className="text-[11px] text-red-400/70 leading-relaxed">{err}</p>
                 ))}
@@ -231,9 +233,9 @@ export default function RunPage() {
           <details className="glass rounded-2xl overflow-hidden">
             <summary className="p-4 flex items-center gap-2 cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors">
               <Terminal className="h-4 w-4" />
-              <span className="font-medium">Log</span>
+              <span className="font-medium">{t("run.log")}</span>
               <Badge variant="secondary" className="ml-auto rounded-md text-[10px] bg-white/[0.05] border border-white/[0.06]">
-                {progress.log.length} entries
+                {t("run.entries", { n: progress.log.length })}
               </Badge>
             </summary>
             <div className="border-t border-white/[0.06]">

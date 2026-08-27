@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, Users, Loader2, Plus, Check, Sparkles } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 import type { DiscoveredProfile } from "@/lib/apify";
 
 const LANGUAGES = ["any", "English", "Spanish", "Portuguese", "French", "German", "Italian"];
@@ -37,6 +38,7 @@ function ProfileCard({
   onAdd: () => void;
   added: boolean;
 }) {
+  const { t } = useLanguage();
   return (
     <div className={`glass rounded-2xl p-4 space-y-2.5 transition-all duration-200 ${selected ? "border-amber-400/40 bg-amber-500/[0.04]" : ""}`}>
       <div className="flex items-start gap-3">
@@ -89,7 +91,7 @@ function ProfileCard({
             className={`flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] ${selected ? "text-amber-600" : "text-muted-foreground hover:text-foreground"}`}
           >
             {selected ? <Check className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
-            {selected ? "Selected as seed" : "Use as seed"}
+            {selected ? t("discover.selectedAsSeed") : t("discover.useAsSeed")}
           </Button>
         )}
         <Button
@@ -100,7 +102,7 @@ function ProfileCard({
           className="flex-1 rounded-xl text-[11px] h-7 gap-1 transition-all duration-200 glass border-white/[0.06] text-muted-foreground hover:text-foreground disabled:opacity-50"
         >
           {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
-          {added ? "Added" : "Add to Creators"}
+          {added ? t("discover.added") : t("discover.addToCreators")}
         </Button>
       </div>
     </div>
@@ -108,6 +110,7 @@ function ProfileCard({
 }
 
 export default function DiscoverPage() {
+  const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [searching, setSearching] = useState(false);
@@ -135,7 +138,7 @@ export default function DiscoverPage() {
         body: JSON.stringify({ query, limit: 10 }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Search failed");
+      if (!res.ok) throw new Error(data.error || t("discover.searchFailed"));
       setSearchResults(data);
     } catch (err) {
       setSearchError(err instanceof Error ? err.message : String(err));
@@ -173,7 +176,7 @@ export default function DiscoverPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Expansion failed");
+      if (!res.ok) throw new Error(data.error || t("discover.expansionFailed"));
       setSimilarResults(data);
     } catch (err) {
       setSimilarError(err instanceof Error ? err.message : String(err));
@@ -194,9 +197,9 @@ export default function DiscoverPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight">Discover Creators</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{t("discover.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Step 1: search a niche by keyword. Step 2: pick promising accounts and expand into their &quot;Suggested for You&quot; network.
+          {t("discover.subtitle")}
         </p>
       </div>
 
@@ -204,34 +207,34 @@ export default function DiscoverPage() {
       <div className="glass rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-xs font-bold text-amber-600">1</div>
-          <h2 className="text-sm font-semibold">Search a niche</h2>
+          <h2 className="text-sm font-semibold">{t("discover.searchNiche")}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Input
-            placeholder='e.g. "coffee shop" or "cafeteria" (for Spanish results)'
+            placeholder={t("discover.queryPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && runSearch()}
             className="w-[320px] rounded-xl glass border-white/[0.08] h-10"
           />
           <Input
-            placeholder="Category to save under (optional)"
+            placeholder={t("discover.categoryToSave")}
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-[220px] rounded-xl glass border-white/[0.08] h-10"
           />
           <Button onClick={runSearch} disabled={searching || !query.trim()} className="rounded-xl h-10 gap-2">
             {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-            Search
+            {t("discover.search")}
           </Button>
           {searchResults.length > 0 && (
             <Badge variant="secondary" className="rounded-lg px-3 py-1.5 text-xs bg-white/[0.05] border border-white/[0.08]">
-              {searchResults.length} results
+              {t("discover.results", { n: searchResults.length })}
             </Badge>
           )}
         </div>
         {searching && (
-          <p className="text-xs text-muted-foreground">Scraping profile details for each match — this takes roughly 1-1.5 minutes for 10 results, not stuck.</p>
+          <p className="text-xs text-muted-foreground">{t("discover.scrapingNote")}</p>
         )}
         {searchError && <p className="text-xs text-red-400">{searchError}</p>}
 
@@ -256,40 +259,40 @@ export default function DiscoverPage() {
       <div className="glass rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-xs font-bold text-amber-600">2</div>
-          <h2 className="text-sm font-semibold">Expand from selected accounts</h2>
-          <span className="text-xs text-muted-foreground">({selectedSeeds.size}/5 selected as seeds)</span>
+          <h2 className="text-sm font-semibold">{t("discover.expandFromSelected")}</h2>
+          <span className="text-xs text-muted-foreground">{t("discover.selectedAsSeeds", { n: selectedSeeds.size })}</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <Input
             type="number"
-            placeholder="Min followers"
+            placeholder={t("discover.minFollowers")}
             value={minFollowers}
             onChange={(e) => setMinFollowers(e.target.value)}
             className="w-[160px] rounded-xl glass border-white/[0.08] h-10"
           />
           <Select value={language} onValueChange={setLanguage}>
             <SelectTrigger className="w-[180px] rounded-xl glass border-white/[0.08] h-10">
-              <SelectValue placeholder="Language" />
+              <SelectValue placeholder={t("discover.language")} />
             </SelectTrigger>
             <SelectContent>
               {LANGUAGES.map((l) => (
-                <SelectItem key={l} value={l}>{l === "any" ? "Any language" : l}</SelectItem>
+                <SelectItem key={l} value={l}>{l === "any" ? t("discover.anyLanguage") : l}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Button onClick={runExpand} disabled={expanding || selectedSeeds.size === 0} className="rounded-xl h-10 gap-2">
             {expanding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            Find similar accounts
+            {t("discover.findSimilar")}
           </Button>
           {similarResults.length > 0 && (
             <Badge variant="secondary" className="rounded-lg px-3 py-1.5 text-xs bg-white/[0.05] border border-white/[0.08]">
-              {similarResults.length} results
+              {t("discover.results", { n: similarResults.length })}
             </Badge>
           )}
         </div>
         {selectedSeeds.size === 0 && (
-          <p className="text-xs text-muted-foreground">Pick 1-5 accounts above with &quot;Use as seed&quot; first — this step costs a small amount of Apify usage per account analyzed (~$0.01 each, first 5 free).</p>
+          <p className="text-xs text-muted-foreground">{t("discover.pickSeedsNote")}</p>
         )}
         {similarError && <p className="text-xs text-red-400">{similarError}</p>}
 

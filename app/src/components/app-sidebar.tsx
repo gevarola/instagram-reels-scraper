@@ -15,19 +15,21 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-
-const navItems = [
-  { title: "Videos", href: "/videos", icon: Film },
-  { title: "Content Ideas", href: "/content-ideas", icon: Lightbulb },
-  { title: "Run Pipeline", href: "/run", icon: Play },
-  { title: "Creators", href: "/creators", icon: Users },
-  { title: "Discover", href: "/discover", icon: Search },
-  { title: "Configuraciones", href: "/configs", icon: Settings2 },
-];
+import { useLanguage } from "@/lib/i18n";
 
 export function AppSidebar() {
   const pathname = usePathname();
   const [lastRun, setLastRun] = useState<string | null>(null);
+  const { t } = useLanguage();
+
+  const navItems = [
+    { title: t("sidebar.nav.videos"), href: "/videos", icon: Film },
+    { title: t("sidebar.nav.contentIdeas"), href: "/content-ideas", icon: Lightbulb },
+    { title: t("sidebar.nav.runPipeline"), href: "/run", icon: Play },
+    { title: t("sidebar.nav.creators"), href: "/creators", icon: Users },
+    { title: t("sidebar.nav.discover"), href: "/discover", icon: Search },
+    { title: t("sidebar.nav.configs"), href: "/configs", icon: Settings2 },
+  ];
 
   useEffect(() => {
     fetch("/api/videos")
@@ -49,7 +51,7 @@ export function AppSidebar() {
           </div>
           <div>
             <h1 className="font-display text-base font-semibold tracking-tight">Virality System</h1>
-            <p className="text-[11px] text-muted-foreground">Instagram Reels AI</p>
+            <p className="text-[11px] text-muted-foreground">{t("sidebar.tagline")}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -81,7 +83,8 @@ export function AppSidebar() {
       {lastRun && (
         <SidebarFooter className="px-5 py-4">
           <p className="text-[11px] text-muted-foreground">
-            Last pipeline: <span className="text-foreground/70">{lastRun}</span>
+            {t("sidebar.lastPipeline").split("{{date}}")[0]}
+            <span className="text-foreground/70">{lastRun}</span>
           </p>
         </SidebarFooter>
       )}

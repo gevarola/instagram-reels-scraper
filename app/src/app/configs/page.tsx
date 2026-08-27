@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, Trash2, Settings2, Sparkles, Search, Users, Film } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 import type { Config, Creator, Video } from "@/lib/types";
 
 const emptyConfig = {
@@ -24,6 +25,7 @@ const emptyConfig = {
 };
 
 export default function ConfigsPage() {
+  const { t } = useLanguage();
   const [configs, setConfigs] = useState<Config[]>([]);
   const [creators, setCreators] = useState<Creator[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -77,7 +79,7 @@ export default function ConfigsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Eliminar esta configuración?")) return;
+    if (!confirm(t("configs.confirmDelete"))) return;
     await fetch(`/api/configs?id=${id}`, { method: "DELETE" });
     loadConfigs();
   };
@@ -86,50 +88,50 @@ export default function ConfigsPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">Configuraciones</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">{t("configs.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Gestioná las configuraciones del pipeline y los prompts de IA
+            {t("configs.subtitle")}
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={openNew} className="rounded-xl bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0 gap-1.5">
               <Plus className="h-4 w-4" />
-              Nueva Configuración
+              {t("configs.newConfig")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto glass-strong rounded-2xl border-white/[0.08]">
             <DialogHeader>
-              <DialogTitle>{editing ? "Editar Configuración" : "Nueva Configuración"}</DialogTitle>
+              <DialogTitle>{editing ? t("configs.editConfig") : t("configs.newConfig")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-5 pt-2">
               <div>
-                <Label className="text-xs text-muted-foreground">Nombre de la Configuración</Label>
+                <Label className="text-xs text-muted-foreground">{t("configs.configName")}</Label>
                 <Input
                   value={form.configName}
                   onChange={(e) => setForm({ ...form, configName: e.target.value })}
-                  placeholder="ej. Videos de Autos para Toto"
+                  placeholder={t("configs.configNamePlaceholder")}
                   className="mt-1.5 rounded-xl glass border-white/[0.08] h-11"
                 />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Categoría de Creadores</Label>
+                <Label className="text-xs text-muted-foreground">{t("configs.creatorsCategory")}</Label>
                 <Input
                   value={form.creatorsCategory}
                   onChange={(e) => setForm({ ...form, creatorsCategory: e.target.value })}
-                  placeholder="ej. revision-autos"
+                  placeholder={t("configs.creatorsCategoryPlaceholder")}
                   className="mt-1.5 rounded-xl glass border-white/[0.08] h-11"
                 />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <Search className="h-3 w-3 text-amber-500" />
-                  Instrucción de Análisis (prompt de Gemini)
+                  {t("configs.analysisInstruction")}
                 </Label>
                 <Textarea
                   value={form.analysisInstruction}
                   onChange={(e) => setForm({ ...form, analysisInstruction: e.target.value })}
-                  placeholder="Prompt que le indica a Gemini cómo analizar el video..."
+                  placeholder={t("configs.analysisPlaceholder")}
                   rows={10}
                   className="mt-1.5 rounded-xl glass border-white/[0.08] font-mono text-xs leading-relaxed"
                 />
@@ -137,12 +139,12 @@ export default function ConfigsPage() {
               <div>
                 <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <Sparkles className="h-3 w-3 text-sky-500" />
-                  Instrucción de Nuevos Conceptos (prompt de Claude)
+                  {t("configs.conceptsInstruction")}
                 </Label>
                 <Textarea
                   value={form.newConceptsInstruction}
                   onChange={(e) => setForm({ ...form, newConceptsInstruction: e.target.value })}
-                  placeholder="Prompt que le indica a Claude cómo generar nuevos conceptos..."
+                  placeholder={t("configs.conceptsPlaceholder")}
                   rows={10}
                   className="mt-1.5 rounded-xl glass border-white/[0.08] font-mono text-xs leading-relaxed"
                 />
@@ -151,7 +153,7 @@ export default function ConfigsPage() {
                 onClick={handleSave}
                 className="w-full rounded-xl h-11 bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0"
               >
-                {editing ? "Guardar Cambios" : "Crear Configuración"}
+                {editing ? t("configs.saveChanges") : t("configs.createConfig")}
               </Button>
             </div>
           </DialogContent>
@@ -209,13 +211,13 @@ export default function ConfigsPage() {
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-xl bg-black/20 border border-white/[0.04] p-3">
-                  <p className="text-[10px] font-medium text-amber-500 uppercase tracking-wider mb-1.5">Prompt de Análisis</p>
+                  <p className="text-[10px] font-medium text-amber-500 uppercase tracking-wider mb-1.5">{t("configs.analysisPromptLabel")}</p>
                   <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                     {config.analysisInstruction}
                   </p>
                 </div>
                 <div className="rounded-xl bg-black/20 border border-white/[0.04] p-3">
-                  <p className="text-[10px] font-medium text-sky-500 uppercase tracking-wider mb-1.5">Prompt de Conceptos</p>
+                  <p className="text-[10px] font-medium text-sky-500 uppercase tracking-wider mb-1.5">{t("configs.conceptsPromptLabel")}</p>
                   <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                     {config.newConceptsInstruction}
                   </p>
@@ -228,8 +230,8 @@ export default function ConfigsPage() {
         {configs.length === 0 && (
           <div className="glass rounded-2xl p-12 text-center">
             <Settings2 className="mx-auto h-10 w-10 text-muted-foreground/30" />
-            <h3 className="mt-4 font-semibold">Todavía no hay configuraciones</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Creá una para empezar.</p>
+            <h3 className="mt-4 font-semibold">{t("configs.emptyTitle")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("configs.emptySubtitle")}</p>
           </div>
         )}
       </div>

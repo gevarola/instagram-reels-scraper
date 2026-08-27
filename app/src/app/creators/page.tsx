@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Pencil, Trash2, Users, Eye, Film, UserCheck, RefreshCw, Loader2, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n";
 import type { Creator } from "@/lib/types";
 
 function formatNumber(n: number): string {
@@ -30,6 +31,7 @@ function formatNumber(n: number): string {
 }
 
 export default function CreatorsPage() {
+  const { t } = useLanguage();
   const [creators, setCreators] = useState<Creator[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Creator | null>(null);
@@ -87,7 +89,7 @@ export default function CreatorsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this creator?")) return;
+    if (!confirm(t("creators.confirmDelete"))) return;
     await fetch(`/api/creators?id=${id}`, { method: "DELETE" });
     loadCreators();
   };
@@ -166,9 +168,9 @@ export default function CreatorsPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">Creators</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">{t("creators.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Manage competitor Instagram accounts to track
+            {t("creators.subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -179,41 +181,41 @@ export default function CreatorsPage() {
             className="rounded-xl glass border-white/[0.08] gap-1.5 text-xs"
           >
             {refreshing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-            Refresh All
+            {t("creators.refreshAll")}
           </Button>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button onClick={openNew} className="rounded-xl bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 border-0 gap-1.5">
                 <Plus className="h-4 w-4" />
-                Add Creator
+                {t("creators.addCreator")}
               </Button>
             </DialogTrigger>
             <DialogContent className="glass-strong rounded-2xl border-white/[0.08]">
               <DialogHeader>
-                <DialogTitle>{editing ? "Edit Creator" : "Add Creator"}</DialogTitle>
+                <DialogTitle>{editing ? t("creators.editCreator") : t("creators.addCreator")}</DialogTitle>
               </DialogHeader>
               <div className="space-y-5 pt-2">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Instagram Username</Label>
+                  <Label className="text-xs text-muted-foreground">{t("creators.instagramUsername")}</Label>
                   <Input
                     value={form.username}
                     onChange={(e) => setForm({ ...form, username: e.target.value })}
-                    placeholder="e.g. marcel.remus"
+                    placeholder={t("creators.usernamePlaceholder")}
                     className="mt-1.5 rounded-xl glass border-white/[0.08] h-11"
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Category</Label>
+                  <Label className="text-xs text-muted-foreground">{t("creators.category")}</Label>
                   <Input
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    placeholder="e.g. dubai-real-estate"
+                    placeholder={t("creators.categoryPlaceholder")}
                     className="mt-1.5 rounded-xl glass border-white/[0.08] h-11"
                   />
                 </div>
                 {!editing && (
                   <p className="text-[11px] text-muted-foreground">
-                    Profile picture, followers, and activity metrics will be scraped automatically from Instagram.
+                    {t("creators.scrapeNote")}
                   </p>
                 )}
                 <Button
@@ -224,10 +226,10 @@ export default function CreatorsPage() {
                   {saving ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      {editing ? "Saving..." : "Adding & scraping..."}
+                      {editing ? t("creators.saving") : t("creators.addingScraping")}
                     </>
                   ) : (
-                    editing ? "Save Changes" : "Add Creator"
+                    editing ? t("creators.saveChanges") : t("creators.addCreator")
                   )}
                 </Button>
               </div>
@@ -240,17 +242,17 @@ export default function CreatorsPage() {
       <div className="flex items-center gap-3">
         <Select value={filterCategory} onValueChange={setFilterCategory}>
           <SelectTrigger className="w-[220px] rounded-xl glass border-white/[0.08] h-10">
-            <SelectValue placeholder="Filter by category" />
+            <SelectValue placeholder={t("creators.filterCategory")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all">{t("creators.allCategories")}</SelectItem>
             {uniqueCategories.map((c) => (
               <SelectItem key={c} value={c}>{c}</SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Badge variant="secondary" className="rounded-lg px-3 py-1.5 text-xs bg-white/[0.05] border border-white/[0.08]">
-          {filtered.length} creators
+          {t("creators.count", { n: filtered.length })}
         </Badge>
       </div>
 
@@ -328,23 +330,23 @@ export default function CreatorsPage() {
                   <div className="rounded-xl bg-black/20 border border-white/[0.04] p-2.5 text-center">
                     <UserCheck className="mx-auto h-3.5 w-3.5 text-sky-500 mb-1" />
                     <p className="num-display text-xl">{formatNumber(creator.followers)}</p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Followers</p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{t("creators.followers")}</p>
                   </div>
                   <div className="rounded-xl bg-black/20 border border-white/[0.04] p-2.5 text-center">
                     <Film className="mx-auto h-3.5 w-3.5 text-amber-500 mb-1" />
                     <p className="num-display text-xl">{creator.reelsCount30d}</p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Reels/30d</p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{t("creators.reels30d")}</p>
                   </div>
                   <div className="rounded-xl bg-black/20 border border-white/[0.04] p-2.5 text-center">
                     <Eye className="mx-auto h-3.5 w-3.5 text-emerald-500 mb-1" />
                     <p className="num-display text-xl">{formatNumber(creator.avgViews30d)}</p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Avg Views</p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{t("creators.avgViews")}</p>
                   </div>
                 </div>
               ) : (
                 <div className="mt-4 rounded-xl bg-black/20 border border-white/[0.04] p-3 text-center">
                   <p className="text-[11px] text-muted-foreground">
-                    No stats yet &mdash; click <RefreshCw className="inline h-3 w-3" /> to scrape
+                    {t("creators.noStatsPrefix")} <RefreshCw className="inline h-3 w-3" /> {t("creators.noStatsSuffix")}
                   </p>
                 </div>
               )}
@@ -353,14 +355,14 @@ export default function CreatorsPage() {
               <div className="mt-3 flex items-center justify-between">
                 {creator.lastScrapedAt ? (
                   <p className="text-[10px] text-muted-foreground/60">
-                    Scraped {new Date(creator.lastScrapedAt).toLocaleDateString()}
+                    {t("creators.scraped", { date: new Date(creator.lastScrapedAt).toLocaleDateString() })}
                   </p>
                 ) : <span />}
                 <Link
                   href={`/videos?creator=${creator.username}`}
                   className="inline-flex items-center gap-1 text-[11px] text-amber-500 hover:text-amber-400 transition-colors"
                 >
-                  View videos <ExternalLink className="h-3 w-3" />
+                  {t("creators.viewVideos")} <ExternalLink className="h-3 w-3" />
                 </Link>
               </div>
             </div>
@@ -370,8 +372,8 @@ export default function CreatorsPage() {
         {filtered.length === 0 && (
           <div className="col-span-full glass rounded-2xl p-12 text-center">
             <Users className="mx-auto h-10 w-10 text-muted-foreground/30" />
-            <h3 className="mt-4 font-semibold">No creators yet</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Add one to get started.</p>
+            <h3 className="mt-4 font-semibold">{t("creators.emptyTitle")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("creators.emptySubtitle")}</p>
           </div>
         )}
       </div>
